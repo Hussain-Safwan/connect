@@ -4,10 +4,15 @@ import MessageSpace from "./MessageSpace";
 import "../styles/layout.css";
 
 function Layout() {
+  const [selected, setSelected] = React.useState({});
+  const selectThread = (thread) => {
+    setSelected(thread);
+    console.log(selected);
+  };
   return (
     <div className="layout">
-      <ChatList className="chat-list" />
-      <MessageSpace className="msg-space" />
+      <ChatList selectThread={selectThread} className="chat-list" />
+      <MessageSpace thread={selected} className="msg-space" />
     </div>
   );
 }

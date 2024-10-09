@@ -8,7 +8,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import Button from "@mui/material/Button";
 import "../styles/msg-space.css";
 
-function MessageSpace() {
+function MessageSpace({ thread }) {
   const [message, setMessage] = React.useState("");
   let [messageList, setMessageList] = React.useState([]);
 
@@ -28,7 +28,7 @@ function MessageSpace() {
                 <ImageIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Photos" secondary="Jan 9, 2014" />
+            <ListItemText primary={thread.name} secondary="Online" />
           </ListItem>
         </List>
       </div>

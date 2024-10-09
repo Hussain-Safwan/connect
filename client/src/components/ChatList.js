@@ -8,7 +8,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import "../styles/chatlist.css";
 import ChatListHeader from "./ChatListHeader";
 
-function ChatList() {
+function ChatList(props) {
   const [selected, setSelected] = React.useState(0);
   const [threadList, setThreadList] = React.useState([
     {
@@ -37,6 +37,7 @@ function ChatList() {
       sender: "Me",
     },
   ]);
+  props.selectThread(threadList[0]);
 
   const trim = (text, limit) => {
     return text.length < limit ? text : text.substring(0, limit) + "...";
@@ -48,7 +49,10 @@ function ChatList() {
       <List sx={{ width: "100%" }}>
         {threadList.map((item, i) => (
           <ListItem
-            onClick={() => setSelected(i)}
+            onClick={() => {
+              setSelected(i);
+              props.selectThread(item);
+            }}
             className={i == selected ? "list-item selected-item" : "list-item"}
           >
             <ListItemAvatar>
