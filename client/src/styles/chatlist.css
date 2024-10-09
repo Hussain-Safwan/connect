@@ -1,0 +1,19 @@
+.list {
+  width: 20%;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  padding: 30px 30px;
+}
+
+.list-item {
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background: #eee;
+  transition: 0.5s;
+}
+
+.selected-item {
+  background: #eee;
+}
