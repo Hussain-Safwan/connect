@@ -5,6 +5,11 @@
 
 .header {
   border-bottom: 1px solid #eee;
+  display: flex;
+}
+.header .logout-btn {
+  margin-top: 25px;
+  height: 35px;
 }
 
 .messages {

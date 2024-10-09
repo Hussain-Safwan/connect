@@ -31,6 +31,9 @@ function MessageSpace({ thread }) {
             <ListItemText primary={thread.name} secondary="2w34ee" />
           </ListItem>
         </List>
+        <Button color="error" variant="outlined" className="logout-btn">
+          Logout
+        </Button>
       </div>
 
       <div className="messages">
@@ -51,7 +54,7 @@ function MessageSpace({ thread }) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <Button variant="contained" onClick={submitMessage}>
+        <Button variant="contained" color="success" onClick={submitMessage}>
           Send
         </Button>
       </div>
