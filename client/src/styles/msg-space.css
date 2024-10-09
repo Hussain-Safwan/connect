@@ -2,3 +2,45 @@
   width: 80%;
   padding: 0 10px;
 }
+
+.header {
+  border-bottom: 1px solid #eee;
+}
+
+.messages {
+  padding: 20px 10px;
+}
+
+.message {
+  padding: 10px 20px;
+  background: #eee;
+  display: inline-block;
+  border-radius: 10px;
+}
+
+.right {
+  margin-top: 10px;
+  background: #ace1af;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  position: absolute;
+  bottom: 10px;
+  width: 75%;
+  border-top: 1px solid #eee;
+}
+.footer textarea {
+  width: 80%;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  height: 50px;
+  padding: 10px;
+}
+.footer textarea:focus {
+  outline: none;
+}
