@@ -10,28 +10,58 @@ import ChatListHeader from "./ChatListHeader";
 
 function ChatList() {
   const [selected, setSelected] = React.useState(0);
+  const [threadList, setThreadList] = React.useState([
+    {
+      name: "Hussain Ifsan",
+      lastMessage: "Will reach by tomorrow",
+      sender: "Me",
+    },
+    {
+      name: "Manha Hayder",
+      lastMessage: "Will reach by tomorrow",
+      sender: "Me",
+    },
+    {
+      name: "Aisha Irrina",
+      lastMessage: "Will reach by tomorrow",
+      sender: "Me",
+    },
+    {
+      name: "Mahbeen Hayder",
+      lastMessage: "Will reach by tomorrow",
+      sender: "Me",
+    },
+    {
+      name: "Miqdaad Abdullah",
+      lastMessage: "Will reach by tomorrow",
+      sender: "Me",
+    },
+  ]);
+
+  const trim = (text, limit) => {
+    return text.length < limit ? text : text.substring(0, limit) + "...";
+  };
 
   return (
     <div className="list">
       <ChatListHeader />
       <List sx={{ width: "100%" }}>
-        {Array(10)
-          .fill(0)
-          .map((item, i) => (
-            <ListItem
-              onClick={() => setSelected(i)}
-              className={
-                i == selected ? "list-item selected-item" : "list-item"
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="Photos" secondary="Jan 9, 2014" />
-            </ListItem>
-          ))}
+        {threadList.map((item, i) => (
+          <ListItem
+            onClick={() => setSelected(i)}
+            className={i == selected ? "list-item selected-item" : "list-item"}
+          >
+            <ListItemAvatar>
+              <Avatar>
+                <ImageIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={item.name}
+              secondary={trim(item.lastMessage, 10)}
+            />
+          </ListItem>
+        ))}
       </List>
     </div>
   );
