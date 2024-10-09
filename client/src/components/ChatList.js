@@ -15,29 +15,34 @@ function ChatList(props) {
       name: "Hussain Ifsan",
       lastMessage: "Will reach by tomorrow",
       sender: "Me",
+      avatarUrl: "https://robohash.org/",
     },
     {
       name: "Manha Hayder",
       lastMessage: "Will reach by tomorrow",
       sender: "Me",
+      avatarUrl: "https://robohash.org/",
     },
     {
       name: "Aisha Irrina",
       lastMessage: "Will reach by tomorrow",
       sender: "Me",
+      avatarUrl: "https://robohash.org/",
     },
     {
       name: "Mahbeen Hayder",
       lastMessage: "Will reach by tomorrow",
       sender: "Me",
+      avatarUrl: "https://robohash.org/",
     },
     {
       name: "Miqdaad Abdullah",
       lastMessage: "Will reach by tomorrow",
       sender: "Me",
+      avatarUrl: "https://robohash.org/",
     },
   ]);
-  props.selectThread(threadList[0]);
+  props.selectThread(threadList[selected]);
 
   const trim = (text, limit) => {
     return text.length < limit ? text : text.substring(0, limit) + "...";
@@ -51,7 +56,7 @@ function ChatList(props) {
           <ListItem
             onClick={() => {
               setSelected(i);
-              props.selectThread(item);
+              // props.selectThread(item);
             }}
             className={i == selected ? "list-item selected-item" : "list-item"}
           >

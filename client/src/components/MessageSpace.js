@@ -28,7 +28,7 @@ function MessageSpace({ thread }) {
                 <ImageIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={thread.name} secondary="Online" />
+            <ListItemText primary={thread.name} secondary="2w34ee" />
           </ListItem>
         </List>
       </div>

@@ -7,7 +7,6 @@ function Layout() {
   const [selected, setSelected] = React.useState({});
   const selectThread = (thread) => {
     setSelected(thread);
-    console.log(selected);
   };
   return (
     <div className="layout">
