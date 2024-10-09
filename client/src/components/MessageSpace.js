@@ -34,16 +34,16 @@ function MessageSpace() {
       </div>
 
       <div className="messages">
-        {[1, 2, 3].map((item, i) => {
-          item % 2 == 0 ? (
+        {messageList.map((item, i) =>
+          i % 2 == 0 ? (
             <div className="message left">{item}</div>
           ) : (
             <div style={{ display: "flex" }}>
               <span />
               <div className="message right">{item}</div>
             </div>
-          );
-        })}
+          )
+        )}
       </div>
 
       <div className="footer">
