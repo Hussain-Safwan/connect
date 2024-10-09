@@ -1,9 +1,12 @@
 import * as React from "react";
 import "../styles/login.css";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-function Login() {
+function CreateAccount() {
+  const navigate = useNavigate();
+
   return (
     <div className="login">
       <div className="box">
@@ -13,7 +16,7 @@ function Login() {
         <div className="login-box">
           <TextField
             id="outlined-basic"
-            label="Full Name"
+            label="Enter Full Name"
             variant="outlined"
             className="textbox"
             //   onChange={(e) => onCodeValueChange(e)}
@@ -23,7 +26,7 @@ function Login() {
         <div className="login-box">
           <TextField
             id="outlined-basic"
-            label="Username"
+            label="Enter Username"
             variant="outlined"
             className="textbox"
             //   onChange={(e) => onCodeValueChange(e)}
@@ -33,7 +36,7 @@ function Login() {
         <div className="login-box">
           <TextField
             id="outlined-basic"
-            label="Password"
+            label="Enter Password"
             variant="outlined"
             className="textbox"
             //   onChange={(e) => onCodeValueChange(e)}
@@ -41,7 +44,11 @@ function Login() {
         </div>{" "}
         <br />
         <div className="login-footer">
-          <Button variant="outlined" color="success">
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={() => navigate("/login")}
+          >
             Go to Login
           </Button>
           <Button variant="contained" color="success">
@@ -52,4 +59,4 @@ function Login() {
     </div>
   );
 }
-export default Login;
+export default CreateAccount;
