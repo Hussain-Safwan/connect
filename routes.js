@@ -1,6 +1,6 @@
 const routes = require("express").Router();
 const passport = require("passport");
-const { userModel } = require("./model");
+const { userModel, threadModel } = require("./model");
 const session = require("express-session");
 const localStrategy = require("passport-local");
 
@@ -58,6 +58,29 @@ routes.post("/save", async (req, res) => {
       .status(200)
       .send({ success: true, message: "Account created", data: user });
   }
+});
+
+routes.post("/thread", isLoggedIn, async (req, res) => {
+  const { receiverId, content } = req.body;
+
+  const thread = new threadModel({
+    name: "",
+    participantIds: [req.user.id, receiverId],
+    messages: [
+      {
+        sender: req.user,
+        content: content,
+      },
+    ],
+  });
+
+  await thread.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Message sent",
+    data: thread,
+  });
 });
 
 module.exports = routes;
