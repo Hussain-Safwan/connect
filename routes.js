@@ -8,6 +8,11 @@ routes.use(session({ secret: "very-secret!" }));
 routes.use(passport.initialize());
 routes.use(passport.session());
 
+const isLoggedIn = (req, res, done) => {
+  if (req.user) return done();
+  res.json(null);
+};
+
 passport.use(
   new localStrategy(async function verify(username, password, done) {
     const user = await userModel.findOne({ username });
@@ -26,13 +31,11 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(async function (user, done) {
-  const foundUser = await userModel.findById(user._id);
-  done(foundUser);
+  done(null, user);
 });
 
-routes.get("/", (req, res) => {
-  console.log(req.user.name);
-  res.send(req.user);
+routes.get("/", isLoggedIn, (req, res) => {
+  res.json(req.user);
 });
 
 routes.post("/login", passport.authenticate("local"), (req, res) => {
