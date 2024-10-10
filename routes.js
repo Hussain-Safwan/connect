@@ -22,17 +22,17 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  done(null, user.id);
+  done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
+passport.deserializeUser(async function (user, done) {
+  const foundUser = await userModel.findById(user._id);
+  done(foundUser);
 });
 
 routes.get("/", (req, res) => {
-  res.send("hello");
+  console.log(req.user.name);
+  res.send(req.user);
 });
 
 routes.post("/login", passport.authenticate("local"), (req, res) => {
