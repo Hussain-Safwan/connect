@@ -6,14 +6,10 @@ routes.get("/", (req, res) => {
 
 routes.post("/save", (req, res) => {
   const { userModel } = require("./model");
-  const user = new userModel({
-    name: "safwan",
-    phone: "017718164366",
-    username: "hussain-safwan",
-    password: "**997**",
-  });
+  const { name, phone, username, password } = req.body;
+  const user = new userModel({ name, phone, username, password });
   user.save();
-  console.log("saved");
+  console.log("user saved");
   res.send("User saved!");
 });
 
