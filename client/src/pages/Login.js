@@ -3,9 +3,33 @@ import "../styles/login.css";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const onUsernameChange = (e) => setUsername(e.target.value);
+  const onPasswordChange = (e) => setPassword(e.target.value);
+
+  const submit = () => {
+    const login = async () => {
+      const res = await axios.post("http://localhost:4000/api/login/", {
+        username,
+        password,
+      });
+      console.log(res.data);
+      if (res.data.success) {
+        navigate("/");
+      } else {
+        console.log(res.data.message);
+      }
+    };
+
+    login();
+  };
+
   return (
     <div className="login">
       <div className="box">
@@ -18,7 +42,8 @@ function Login() {
             label="Username"
             variant="outlined"
             className="textbox"
-            //   onChange={(e) => onCodeValueChange(e)}
+            value={username}
+            onChange={(e) => onUsernameChange(e)}
           />
         </div>
         <br />
@@ -28,7 +53,8 @@ function Login() {
             label="Password"
             variant="outlined"
             className="textbox"
-            //   onChange={(e) => onCodeValueChange(e)}
+            value={password}
+            onChange={(e) => onPasswordChange(e)}
           />
         </div>{" "}
         <br />
@@ -40,7 +66,7 @@ function Login() {
           >
             Create Account
           </Button>
-          <Button variant="contained" color="success">
+          <Button variant="contained" color="success" onClick={submit}>
             Login
           </Button>
         </div>

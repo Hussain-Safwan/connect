@@ -35,11 +35,20 @@ passport.deserializeUser(async function (user, done) {
 });
 
 routes.get("/", isLoggedIn, (req, res) => {
-  res.json(req.user);
+  console.log("user-api");
+  res.json({
+    success: true,
+    message: "User logged in",
+    data: req.user,
+  });
 });
 
 routes.post("/login", passport.authenticate("local"), (req, res) => {
-  res.json(req.user);
+  res.json({
+    success: true,
+    message: "Login successful",
+    data: req.user,
+  });
 });
 
 routes.post("/save", async (req, res) => {
