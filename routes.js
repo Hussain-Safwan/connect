@@ -78,7 +78,25 @@ routes.post("/thread", isLoggedIn, async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: "Message sent",
+    message: "Message sent to new thread",
+    data: thread,
+  });
+});
+
+routes.post("/send-message", isLoggedIn, async (req, res) => {
+  const { threadId, content } = req.body;
+  const thread = await threadModel.findById(threadId);
+
+  thread.messages.push({
+    sender: req.user,
+    content,
+  });
+
+  await thread.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Message sent to current thread",
     data: thread,
   });
 });
