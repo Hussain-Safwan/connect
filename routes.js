@@ -10,7 +10,7 @@ routes.post("/save", (req, res) => {
   const user = new userModel({ name, phone, username, password });
   user.save();
   console.log("user saved");
-  res.send("User saved!");
+  res.status(200).send({ success: true, data: user });
 });
 
 module.exports = routes;
