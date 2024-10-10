@@ -35,7 +35,6 @@ passport.deserializeUser(async function (user, done) {
 });
 
 routes.get("/", isLoggedIn, (req, res) => {
-  console.log("user-api");
   res.json({
     success: true,
     message: "User logged in",
@@ -70,17 +69,12 @@ routes.post("/save", async (req, res) => {
 });
 
 routes.post("/thread", isLoggedIn, async (req, res) => {
-  const { receiverId, content } = req.body;
+  const { receiverId } = req.body;
 
   const thread = new threadModel({
     name: "",
     participantIds: [req.user.id, receiverId],
-    messages: [
-      {
-        sender: req.user,
-        content: content,
-      },
-    ],
+    messages: [],
   });
 
   await thread.save();
