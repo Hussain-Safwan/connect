@@ -22,6 +22,7 @@ function ChatListHeader({ contactList }) {
   const [openNewModal, setOpenNewModal] = React.useState(false);
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [codeValue, setCodeValue] = React.useState("");
+  const [groupName, setGroupName] = React.useState("");
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
@@ -45,6 +46,9 @@ function ChatListHeader({ contactList }) {
   const onContactUsernameChange = (e) => {
     setContactUsername(e.target.value);
   };
+  const handleGroupNameChange = (e) => {
+    setGroupName(e.target.value);
+  };
   const addContact = () => {
     setContactUsername("");
     const index = contactList.findIndex((item) => {
@@ -65,6 +69,14 @@ function ChatListHeader({ contactList }) {
   const submitCode = () => {
     setOpenNewModal(false);
     console.log(codeValue);
+  };
+  const submitGroupThread = () => {
+    const thread = {
+      name: groupName,
+      participants: addedContacts,
+    };
+
+    console.log(thread);
   };
 
   return (
@@ -108,7 +120,12 @@ function ChatListHeader({ contactList }) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            onChange={handleGroupNameChange}
+            variant="h6"
+            component="h2"
+          >
             New Group Chat
           </Typography>
           <br />
@@ -118,7 +135,7 @@ function ChatListHeader({ contactList }) {
               id="outlined-basic"
               label="Enter name of the group"
               variant="outlined"
-              onChange={(e) => onCodeValueChange(e)}
+              onChange={(e) => handleGroupNameChange(e)}
             />
           </div>
           <br />
@@ -159,7 +176,11 @@ function ChatListHeader({ contactList }) {
             </List>
           </div>
 
-          <Button variant="contained" color="success" onClick={submitCode}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={submitGroupThread}
+          >
             Create
           </Button>
         </Box>
