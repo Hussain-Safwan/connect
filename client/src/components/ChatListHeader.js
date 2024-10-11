@@ -37,7 +37,11 @@ function ChatListHeader({ contactList }) {
   };
 
   const handleClose = () => setOpenNewModal(false);
-  const handleGroupModalClose = () => setOpenGroupModal(false);
+  const handleGroupModalClose = () => {
+    setOpenGroupModal(false);
+    setContactUsername("");
+    setAddedContacts([]);
+  };
   const handleSnackbarClose = () => setOpenSnackbar(false);
 
   const onCodeValueChange = (e) => {
@@ -143,7 +147,7 @@ function ChatListHeader({ contactList }) {
             <TextField
               id="outlined-basic"
               label="Enter participant's username"
-              variant="outlined"
+              variant="standard"
               onChange={(e) => onContactUsernameChange(e)}
             />
             <Button
