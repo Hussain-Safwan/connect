@@ -11,6 +11,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
 import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
+import CloseIcon from "@mui/icons-material/Close";
 
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
@@ -22,6 +24,7 @@ function ChatListHeader({ contactList }) {
   const [codeValue, setCodeValue] = React.useState("");
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const style = {
     position: "absolute",
     top: "50%",
@@ -34,6 +37,7 @@ function ChatListHeader({ contactList }) {
 
   const handleClose = () => setOpenNewModal(false);
   const handleGroupModalClose = () => setOpenGroupModal(false);
+  const handleSnackbarClose = () => setOpenSnackbar(false);
 
   const onCodeValueChange = (e) => {
     setCodeValue(e.target.value);
@@ -49,7 +53,7 @@ function ChatListHeader({ contactList }) {
 
     if (index !== -1) {
       setAddedContacts([contactList[index], ...addedContacts]);
-    }
+    } else setOpenSnackbar(true);
   };
   const removeContact = (username) => {
     console.log(username);
@@ -65,6 +69,12 @@ function ChatListHeader({ contactList }) {
 
   return (
     <div classname="chat-list-header">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="Username not found on your list of contacts"
+      />
       <Modal
         open={openNewModal}
         onClose={handleClose}
