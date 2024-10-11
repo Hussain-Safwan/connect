@@ -4,7 +4,18 @@ const { userModel, threadModel } = require("./model");
 const session = require("express-session");
 const localStrategy = require("passport-local");
 
-routes.use(session({ secret: "very-secret!" }));
+routes.use(
+  session({
+    secret: "your_secret_key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
+    },
+  })
+);
 routes.use(passport.initialize());
 routes.use(passport.session());
 
@@ -27,14 +38,15 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
+  done(null, user._id);
+});
+
+passport.deserializeUser(async function (id, done) {
+  const user = await userModel.findById(id);
   done(null, user);
 });
 
-passport.deserializeUser(async function (user, done) {
-  done(null, user);
-});
-
-routes.get("/", isLoggedIn, (req, res) => {
+routes.get("/user", isLoggedIn, (req, res) => {
   res.json({
     success: true,
     message: "User logged in",
@@ -43,6 +55,7 @@ routes.get("/", isLoggedIn, (req, res) => {
 });
 
 routes.post("/login", passport.authenticate("local"), (req, res) => {
+  res.cookie("user", req.user);
   res.json({
     success: true,
     message: "Login successful",
