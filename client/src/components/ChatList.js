@@ -13,31 +13,31 @@ function ChatList(props) {
   const [threadList, setThreadList] = React.useState([
     {
       name: "Hussain Ifsan",
-      lastMessage: "Will reach by tomorrow",
+      username: "hussain_ifsan",
       sender: "Me",
       avatarUrl: "https://robohash.org/",
     },
     {
       name: "Manha Hayder",
-      lastMessage: "Will reach by tomorrow",
+      username: "snod010",
       sender: "Me",
       avatarUrl: "https://robohash.org/",
     },
     {
       name: "Aisha Irrina",
-      lastMessage: "Will reach by tomorrow",
+      username: "irrina2007",
       sender: "Me",
       avatarUrl: "https://robohash.org/",
     },
     {
       name: "Mahbeen Hayder",
-      lastMessage: "Will reach by tomorrow",
+      username: "_squeen_",
       sender: "Me",
       avatarUrl: "https://robohash.org/",
     },
     {
       name: "Miqdaad Abdullah",
-      lastMessage: "Will reach by tomorrow",
+      username: "saifUllah",
       sender: "Me",
       avatarUrl: "https://robohash.org/",
     },
@@ -50,7 +50,7 @@ function ChatList(props) {
 
   return (
     <div className="list">
-      <ChatListHeader />
+      <ChatListHeader contactList={threadList} />
       <List sx={{ width: "100%" }}>
         {threadList.map((item, i) => (
           <ListItem
@@ -65,10 +65,7 @@ function ChatList(props) {
                 <ImageIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText
-              primary={item.name}
-              secondary={trim(item.lastMessage, 10)}
-            />
+            <ListItemText primary={item.name} secondary={"@" + item.username} />
           </ListItem>
         ))}
       </List>

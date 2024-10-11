@@ -20,8 +20,8 @@ function ChatListHeader({ contactList }) {
   const [openNewModal, setOpenNewModal] = React.useState(false);
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [codeValue, setCodeValue] = React.useState("");
+  const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -37,6 +37,19 @@ function ChatListHeader({ contactList }) {
 
   const onCodeValueChange = (e) => {
     setCodeValue(e.target.value);
+  };
+  const onContactUsernameChange = (e) => {
+    setContactUsername(e.target.value);
+  };
+  const addContact = () => {
+    const index = contactList.findIndex((item) => {
+      return item.username === contactUsername;
+    });
+
+    if (index !== -1) {
+      setAddedContacts([contactList[index], ...addedContacts]);
+      setContactUsername("");
+    }
   };
   const submitCode = () => {
     setOpenNewModal(false);
@@ -97,14 +110,22 @@ function ChatListHeader({ contactList }) {
               id="outlined-basic"
               label="Enter participant's username"
               variant="outlined"
-              onChange={(e) => onCodeValueChange(e)}
+              onChange={(e) => onContactUsernameChange(e)}
             />
+            <Button
+              variant="outlined"
+              onClick={addContact}
+              color="success"
+              style={{ marginLeft: "20px", marginTop: "10px" }}
+            >
+              Add
+            </Button>
           </div>
           <br />
 
           <div className="added-contacts">
             <List sx={{ width: "100%" }}>
-              {contactList.map((item, i) => (
+              {addedContacts.map((item, i) => (
                 <ListItem className="list-item">
                   <ListItemAvatar>
                     <Avatar>
@@ -112,13 +133,16 @@ function ChatListHeader({ contactList }) {
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText primary={item.name} secondary={item.username} />
-                  <CancelIcon color="error" />
+                  <CancelIcon
+                    color="error"
+                    onClick={() => removeContact(item.username)}
+                  />
                 </ListItem>
               ))}
             </List>
           </div>
 
-          <Button variant="contained" onClick={submitCode}>
+          <Button variant="contained" color="success" onClick={submitCode}>
             Create
           </Button>
         </Box>
