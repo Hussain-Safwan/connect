@@ -16,7 +16,8 @@
 }
 
 .selected-item {
-  background: #eee;
+  background: #e5ffed;
+  border-left: 3px solid #b1ffca;
 }
 
 .added-contacts {

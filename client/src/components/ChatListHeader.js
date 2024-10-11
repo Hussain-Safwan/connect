@@ -58,7 +58,11 @@ function ChatListHeader({ contactList }) {
       return item.username === contactUsername;
     });
 
-    if (index !== -1) {
+    if (
+      index !== -1 &&
+      addedContacts.findIndex((item) => item.username === contactUsername) ===
+        -1
+    ) {
       setAddedContacts([contactList[index], ...addedContacts]);
     } else setOpenSnackbar(true);
   };
