@@ -4,11 +4,23 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import ImageIcon from "@mui/icons-material/Image";
 import TextField from "@mui/material/TextField";
 
-function ChatListHeader() {
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import CancelIcon from "@mui/icons-material/Cancel";
+
+function ChatListHeader({ contactList }) {
   const [openNewModal, setOpenNewModal] = React.useState(false);
+  const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [codeValue, setCodeValue] = React.useState("");
+  const [addedContacts, setAddedContacts] = React.useState([]);
 
   const style = {
     position: "absolute",
@@ -21,6 +33,8 @@ function ChatListHeader() {
   };
 
   const handleClose = () => setOpenNewModal(false);
+  const handleGroupModalClose = () => setOpenGroupModal(false);
+
   const onCodeValueChange = (e) => {
     setCodeValue(e.target.value);
   };
@@ -39,14 +53,14 @@ function ChatListHeader() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            New Conversation
+            New Contact
           </Typography>
           <br />
 
           <div style={{ display: "flex", justifyContent: "space-around" }}>
             <TextField
               id="outlined-basic"
-              label="Enter conversation code"
+              label="Enter username"
               variant="outlined"
               onChange={(e) => onCodeValueChange(e)}
             />
@@ -54,6 +68,59 @@ function ChatListHeader() {
               Add
             </Button>
           </div>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openGroupModal}
+        onClose={handleGroupModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            New Group Chat
+          </Typography>
+          <br />
+
+          <div>
+            <TextField
+              id="outlined-basic"
+              label="Enter name of the group"
+              variant="outlined"
+              onChange={(e) => onCodeValueChange(e)}
+            />
+          </div>
+          <br />
+          <div>
+            <TextField
+              id="outlined-basic"
+              label="Enter participant's username"
+              variant="outlined"
+              onChange={(e) => onCodeValueChange(e)}
+            />
+          </div>
+          <br />
+
+          <div className="added-contacts">
+            <List sx={{ width: "100%" }}>
+              {contactList.map((item, i) => (
+                <ListItem className="list-item">
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ImageIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={item.name} secondary={item.username} />
+                  <CancelIcon color="error" />
+                </ListItem>
+              ))}
+            </List>
+          </div>
+
+          <Button variant="contained" onClick={submitCode}>
+            Create
+          </Button>
         </Box>
       </Modal>
 
@@ -68,9 +135,23 @@ function ChatListHeader() {
         <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
           Chats
         </Typography>
-        <Button onClick={() => setOpenNewModal(true)} style={{ color: "#333" }}>
-          New
-        </Button>
+        <div>
+          <Button
+            onClick={() => setOpenNewModal(true)}
+            style={{ color: "#333" }}
+            toolTip="Add new contact"
+          >
+            <PersonAddAltIcon color="success" />
+          </Button>
+
+          <Button
+            onClick={() => setOpenGroupModal(true)}
+            style={{ color: "#333" }}
+            toolTip="Add new contact"
+          >
+            <GroupAddIcon color="success" />
+          </Button>
+        </div>
       </div>
     </div>
   );

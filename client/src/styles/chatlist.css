@@ -18,3 +18,8 @@
 .selected-item {
   background: #eee;
 }
+
+.added-contacts {
+  max-height: 150px;
+  overflow-y: scroll;
+}
