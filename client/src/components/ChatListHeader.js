@@ -42,14 +42,21 @@ function ChatListHeader({ contactList }) {
     setContactUsername(e.target.value);
   };
   const addContact = () => {
+    setContactUsername("");
     const index = contactList.findIndex((item) => {
       return item.username === contactUsername;
     });
 
     if (index !== -1) {
       setAddedContacts([contactList[index], ...addedContacts]);
-      setContactUsername("");
     }
+  };
+  const removeContact = (username) => {
+    console.log(username);
+    const filteredList = addedContacts.filter(
+      (item) => item.username !== username
+    );
+    setAddedContacts(filteredList);
   };
   const submitCode = () => {
     setOpenNewModal(false);
