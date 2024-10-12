@@ -13,8 +13,13 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 
 import "../styles/msg-space.css";
+import { MyContext } from "../context";
 
-function MessageSpace({ thread, contactList }) {
+function MessageSpace() {
+  const { context, setContext } = React.useContext(MyContext);
+  const { user, threadList, selectedThread } = context;
+
+  console.log(selectedThread);
   const [message, setMessage] = React.useState("");
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [groupName, setGroupName] = React.useState("");
@@ -41,12 +46,12 @@ function MessageSpace({ thread, contactList }) {
   };
   const addContact = () => {
     setContactUsername("");
-    const index = contactList.findIndex((item) => {
+    const index = threadList.findIndex((item) => {
       return item.username === contactUsername;
     });
 
     if (index !== -1) {
-      setAddedContacts([contactList[index], ...addedContacts]);
+      setAddedContacts([threadList[index], ...addedContacts]);
     } else setOpenSnackbar(true);
   };
   const removeContact = (username) => {
@@ -76,16 +81,21 @@ function MessageSpace({ thread, contactList }) {
   return (
     <div className="msg-space">
       <div className="header" onClick={setOpenGroupModal}>
-        <List sx={{ width: "100%" }}>
-          <ListItem className="">
-            <ListItemAvatar>
-              <Avatar>
-                <ImageIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={thread.name} secondary="2w34ee" />
-          </ListItem>
-        </List>
+        {selectedThread && (
+          <List sx={{ width: "100%" }}>
+            <ListItem className="">
+              <ListItemAvatar>
+                <Avatar>
+                  <ImageIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={selectedThread.participants[1].name}
+                secondary={"@" + selectedThread.participants[1].username}
+              />
+            </ListItem>
+          </List>
+        )}
         <Button color="error" variant="outlined" className="logout-btn">
           Logout
         </Button>
@@ -127,7 +137,7 @@ function MessageSpace({ thread, contactList }) {
             variant="h6"
             component="h2"
           >
-            {thread.name}
+            {selectedThread.name}
           </Typography>
           <br />
 

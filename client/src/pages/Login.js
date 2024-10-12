@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import { MyContext } from "../context";
 
 function Login() {
   const navigate = useNavigate();
+  const { context, setContext } = React.useContext(MyContext);
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -19,8 +22,14 @@ function Login() {
         username,
         password,
       });
-      console.log(res.data);
+
       if (res.data.success) {
+        const { user, threadList } = res.data.data;
+        setContext({
+          user: user,
+          threadList: threadList,
+          selectedThread: threadList.length === 0 ? null : threadList[0],
+        });
         navigate("/");
       } else {
         console.log(res.data.message);

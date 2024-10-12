@@ -4,61 +4,25 @@ import MessageSpace from "./MessageSpace";
 import "../styles/layout.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { MyContext } from "../context";
 
 function Layout() {
-  const [user, setUser] = React.useState(null);
+  axios.defaults.withCredentials = true;
+  const { context, setContext } = React.useContext(MyContext);
+  const { user, threadList, selectedThread } = context;
+  console.log(threadList);
   const navigate = useNavigate();
-  const [threadList, setThreadList] = React.useState([
-    {
-      name: "Hussain Ifsan",
-      username: "hussain_ifsan",
-      sender: "Me",
-      avatarUrl: "https://robohash.org/",
-    },
-    {
-      name: "Manha Hayder",
-      username: "snod010",
-      sender: "Me",
-      avatarUrl: "https://robohash.org/",
-    },
-    {
-      name: "Aisha Irrina",
-      username: "irrina2007",
-      sender: "Me",
-      avatarUrl: "https://robohash.org/",
-    },
-    {
-      name: "Mahbeen Hayder",
-      username: "_squeen_",
-      sender: "Me",
-      avatarUrl: "https://robohash.org/",
-    },
-    {
-      name: "Miqdaad Abdullah",
-      username: "saifUllah",
-      sender: "Me",
-      avatarUrl: "https://robohash.org/",
-    },
-  ]);
-  React.useEffect(() => {
-    const getUser = async () => {
-      const res = await axios.get("http://localhost:4000/api/user");
 
-      // if (!res.data) {
-      //   navigate("/login");
-      // } else {
-      //   setUser(res.data.data);
-      // }
-      console.log(res.data);
-    };
+  if (context.user === null) navigate("/login");
 
-    getUser();
-  }, []);
+  // const [threadList, setThreadList] = React.useState([]);
+  // const [user, setUser] = React.useState(null);
 
   const [selected, setSelected] = React.useState({});
   const selectThread = (thread) => {
     setSelected(thread);
   };
+
   return (
     <div className="layout">
       <ChatList
@@ -66,11 +30,11 @@ function Layout() {
         threadList={threadList}
         className="chat-list"
       />
-      <MessageSpace
-        thread={selected}
-        threadList={threadList}
-        className="msg-space"
-      />
+      {threadList.length < 1 ? (
+        <div>No conversation thread selected</div>
+      ) : (
+        <MessageSpace className="msg-space" />
+      )}
     </div>
   );
 }
