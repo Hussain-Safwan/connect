@@ -96,6 +96,11 @@ function MessageSpace() {
     bgcolor: "background.paper",
     p: 4,
   };
+
+  const logout = () => {
+    setContext({ user: null, threadList: [], selectedThread: null });
+    navigate("/login");
+  };
   return (
     <div className="msg-space">
       <div className="header" onClick={setOpenGroupModal}>
@@ -126,7 +131,7 @@ function MessageSpace() {
           color="error"
           variant="outlined"
           className="logout-btn"
-          onClick={() => navigate("/login")}
+          onClick={logout}
         >
           Logout
         </Button>
@@ -134,13 +139,18 @@ function MessageSpace() {
 
       <div className="messages">
         {selectedThread.messages.map((item, i) =>
-          i % 2 == 0 ? (
-            <div className="message left">{item.content}</div>
+          item.sender.username === user.username ? (
+            <>
+              <div className="message left">{item.content}</div>
+              <br />
+            </>
           ) : (
-            <div style={{ display: "flex" }}>
-              <span />
-              <div className="message right">{item.content}</div>
-            </div>
+            <>
+              <div style={{ display: "flex" }}>
+                <span />
+                <div className="message right">{item.content}</div>
+              </div>
+            </>
           )
         )}
       </div>

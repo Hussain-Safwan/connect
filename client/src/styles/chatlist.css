@@ -24,3 +24,9 @@
   max-height: 150px;
   overflow-y: scroll;
 }
+
+.alert-msg {
+  text-align: center;
+  color: #aaa;
+  margin-top: 50px;
+}
