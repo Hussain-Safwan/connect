@@ -12,12 +12,15 @@ import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
-
+import axios from "axios";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { MyContext } from "../context";
 
-function ChatListHeader({ contactList }) {
+function ChatListHeader() {
+  axios.defaults.withCredentials = true;
+
   const [openNewModal, setOpenNewModal] = React.useState(false);
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [codeValue, setCodeValue] = React.useState("");
@@ -25,6 +28,7 @@ function ChatListHeader({ contactList }) {
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -34,6 +38,8 @@ function ChatListHeader({ contactList }) {
     bgcolor: "background.paper",
     p: 4,
   };
+  const { context, setContext } = React.useContext(MyContext);
+  const { user, threadList, selectedThread } = context;
 
   const handleClose = () => setOpenNewModal(false);
   const handleGroupModalClose = () => {
@@ -54,7 +60,7 @@ function ChatListHeader({ contactList }) {
   };
   const addContact = () => {
     setContactUsername("");
-    const index = contactList.findIndex((item) => {
+    const index = threadList.findIndex((item) => {
       return item.username === contactUsername;
     });
 
@@ -63,7 +69,7 @@ function ChatListHeader({ contactList }) {
       addedContacts.findIndex((item) => item.username === contactUsername) ===
         -1
     ) {
-      setAddedContacts([contactList[index], ...addedContacts]);
+      setAddedContacts([threadList[index], ...addedContacts]);
     } else setOpenSnackbar(true);
   };
   const removeContact = (username) => {
@@ -73,9 +79,24 @@ function ChatListHeader({ contactList }) {
     );
     setAddedContacts(filteredList);
   };
-  const submitCode = () => {
+  const submitCode = async () => {
     setOpenNewModal(false);
     console.log(codeValue);
+
+    const res = await axios.post(
+      "http://localhost:4000/api/thread",
+      {
+        username: codeValue,
+        userId: user._id,
+      },
+      { withCredentials: true }
+    );
+    console.log(res.data);
+    if (res.data) {
+      const tempList = threadList;
+      tempList.push(res.data.data);
+      setContext((ctx) => ({ ...ctx, threadList: tempList }));
+    }
   };
   const submitGroupThread = () => {
     const thread = {
