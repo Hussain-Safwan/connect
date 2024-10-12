@@ -47,20 +47,22 @@ function ChatListHeader() {
     setContactUsername("");
     setAddedContacts([]);
   };
+
   const handleSnackbarClose = () => setOpenSnackbar(false);
 
   const onCodeValueChange = (e) => {
     setCodeValue(e.target.value);
   };
+
   const onContactUsernameChange = (e) => {
     setContactUsername(e.target.value);
   };
+
   const handleGroupNameChange = (e) => {
     setGroupName(e.target.value);
   };
+
   const addContact = () => {
-    // setContactUsername("");
-    console.log(threadList);
     const index = threadList.findIndex((item) => {
       return item.participants[0].username === contactUsername;
     });
@@ -70,9 +72,12 @@ function ChatListHeader() {
       addedContacts.findIndex((item) => item.username === contactUsername) ===
         -1
     ) {
-      setAddedContacts([threadList[index], ...addedContacts]);
+      console.log(threadList[index].participants);
+      setAddedContacts([threadList[index].participants[0], ...addedContacts]);
     } else setOpenSnackbar(true);
+    setContactUsername("");
   };
+
   const removeContact = (username) => {
     console.log(username);
     const filteredList = addedContacts.filter(
@@ -105,7 +110,7 @@ function ChatListHeader() {
       name: groupName,
       participants: addedContacts,
     };
-
+    console.log(thread);
     const res = await axios.post(
       "http://localhost:4000/api/group",
       {
@@ -209,10 +214,7 @@ function ChatListHeader() {
                       <ImageIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText
-                    primary={item.participants[0].name}
-                    secondary={item.participants[0].username}
-                  />
+                  <ListItemText primary={item.name} secondary={item.username} />
                   <CancelIcon
                     color="error"
                     onClick={() => removeContact(item.username)}

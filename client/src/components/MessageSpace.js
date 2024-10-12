@@ -14,12 +14,13 @@ import TextField from "@mui/material/TextField";
 
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function MessageSpace() {
   const { context, setContext } = React.useContext(MyContext);
   const { user, threadList, selectedThread } = context;
-
-  console.log(selectedThread);
+  const navigate = useNavigate();
   const [message, setMessage] = React.useState("");
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [groupName, setGroupName] = React.useState("");
@@ -28,10 +29,30 @@ function MessageSpace() {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   let [messageList, setMessageList] = React.useState([]);
 
-  const submitMessage = () => {
-    setMessageList((ls) => [...ls, message]);
+  const submitMessage = async () => {
+    console.log(selectedThread);
+    const res = await axios.post(
+      "http://localhost:4000/api/send-message",
+      {
+        threadId: selectedThread._id,
+        userId: user._id,
+        content: message,
+      },
+      { withCredentials: true }
+    );
+
+    if (res.data) {
+      const index = threadList.findIndex(
+        (item) => item._id === selectedThread._id
+      );
+      threadList[index] = res.data.data;
+      setContext((ctx) => ({
+        ...ctx,
+        threadList,
+        selectedThread: res.data.data,
+      }));
+    }
     setMessage("");
-    console.log(messageList);
   };
   const handleGroupModalClose = () => {
     setOpenGroupModal(false);
@@ -55,7 +76,6 @@ function MessageSpace() {
     } else setOpenSnackbar(true);
   };
   const removeContact = (username) => {
-    console.log(username);
     const filteredList = addedContacts.filter(
       (item) => item.username !== username
     );
@@ -66,8 +86,6 @@ function MessageSpace() {
       name: groupName,
       participants: addedContacts,
     };
-
-    console.log(thread);
   };
   const style = {
     position: "absolute",
@@ -91,32 +109,37 @@ function MessageSpace() {
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  selectedThread.participants < 3
+                  selectedThread.participants.length == 1
                     ? selectedThread.participants[0].name
                     : selectedThread.name
                 }
                 secondary={
-                  selectedThread.participants < 3
+                  selectedThread.participants.length == 1
                     ? "@" + selectedThread.participants[0].username
-                    : selectedThread.participants.length + " people"
+                    : selectedThread.participants.length + 1 + " people"
                 }
               />
             </ListItem>
           </List>
         )}
-        <Button color="error" variant="outlined" className="logout-btn">
+        <Button
+          color="error"
+          variant="outlined"
+          className="logout-btn"
+          onClick={() => navigate("/login")}
+        >
           Logout
         </Button>
       </div>
 
       <div className="messages">
-        {messageList.map((item, i) =>
+        {selectedThread.messages.map((item, i) =>
           i % 2 == 0 ? (
-            <div className="message left">{item}</div>
+            <div className="message left">{item.content}</div>
           ) : (
             <div style={{ display: "flex" }}>
               <span />
-              <div className="message right">{item}</div>
+              <div className="message right">{item.content}</div>
             </div>
           )
         )}
@@ -127,7 +150,12 @@ function MessageSpace() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <Button variant="contained" color="success" onClick={submitMessage}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={submitMessage}
+          disabled={message === ""}
+        >
           Send
         </Button>
       </div>
