@@ -50,7 +50,6 @@ routes.get("/user", isLoggedIn, async (req, res) => {
   const threadList = await threadModel.find({
     participants: { $in: [req.user] },
   });
-  console.log(threadList);
   res.json({
     success: true,
     message: "User logged in",
@@ -68,9 +67,18 @@ routes.post("/login", passport.authenticate("local"), async (req, res) => {
     const part = thread.participants.filter(
       (item) => item.username !== req.user.username
     );
-    console.log(part);
     thread.participants = part;
     tempThreadList.push(thread);
+  });
+
+  tempThreadList.sort((a, b) => {
+    if (a.messages.length < 1) return 1;
+    if (b.messages.length < 1) return -1;
+
+    const date_a = a.messages[a.messages.length - 1].sendingTime;
+    const date_b = b.messages[b.messages.length - 1].sendingTime;
+
+    return date_b - date_a;
   });
 
   res.json({
@@ -101,9 +109,7 @@ routes.post("/save", async (req, res) => {
 routes.post("/thread", async (req, res) => {
   const { username, userId } = req.body;
   const currentUser = await userModel.findById(userId);
-  console.log(username);
   const receiver = await userModel.findOne({ username });
-  console.log(receiver.name, currentUser.name);
   const thread = new threadModel({
     name: "",
     participants: [currentUser, receiver],

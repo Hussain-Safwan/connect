@@ -139,7 +139,7 @@ function MessageSpace() {
 
       <div className="messages">
         {selectedThread.messages.map((item, i) =>
-          item.sender.username === user.username ? (
+          item.sender.username !== user.username ? (
             <>
               <div className="message left">{item.content}</div>
               <br />
