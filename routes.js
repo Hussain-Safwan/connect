@@ -62,10 +62,21 @@ routes.post("/login", passport.authenticate("local"), async (req, res) => {
   const threadList = await threadModel.find({
     participants: { $in: [req.user] },
   });
+
+  let tempThreadList = [];
+  threadList.forEach((thread) => {
+    const part = thread.participants.filter(
+      (item) => item.username !== req.user.username
+    )[0];
+    thread.participants = part;
+    tempThreadList.push(thread);
+  });
+
+  console.log(tempThreadList);
   res.json({
     success: true,
     message: "Login successful",
-    data: { user: req.user, threadList },
+    data: { user: req.user, threadList: tempThreadList },
   });
 });
 
@@ -104,6 +115,25 @@ routes.post("/thread", async (req, res) => {
     success: true,
     message: "Message sent to new thread",
     data: thread,
+  });
+});
+
+routes.post("/group", async (req, res) => {
+  const { thread, userId } = req.body;
+  const currentUser = await userModel.findById(userId);
+
+  const newThread = new threadModel({
+    name: thread.name,
+    participants: [...thread.participants, currentUser],
+    messages: [],
+  });
+
+  await newThread.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Message sent to new thread",
+    data: newThread,
   });
 });
 
