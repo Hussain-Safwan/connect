@@ -68,11 +68,11 @@ routes.post("/login", passport.authenticate("local"), async (req, res) => {
     const part = thread.participants.filter(
       (item) => item.username !== req.user.username
     );
+    console.log(part);
     thread.participants = part;
     tempThreadList.push(thread);
   });
 
-  console.log(tempThreadList);
   res.json({
     success: true,
     message: "Login successful",
@@ -103,6 +103,7 @@ routes.post("/thread", async (req, res) => {
   const currentUser = await userModel.findById(userId);
   console.log(username);
   const receiver = await userModel.findOne({ username });
+  console.log(receiver.name, currentUser.name);
   const thread = new threadModel({
     name: "",
     participants: [currentUser, receiver],
@@ -142,10 +143,6 @@ routes.post("/send-message", async (req, res) => {
   const thread = await threadModel.findById(threadId);
   const currentUser = await userModel.findById(userId);
 
-  thread.participants = thread.participants.filter(
-    (item) => item.username !== currentUser.username
-  );
-
   thread.messages.push({
     sender: currentUser,
     content,
@@ -153,6 +150,9 @@ routes.post("/send-message", async (req, res) => {
 
   await thread.save();
 
+  thread.participants = thread.participants.filter(
+    (item) => item.username !== currentUser.username
+  );
   res.status(200).json({
     success: true,
     message: "Message sent to current thread",
