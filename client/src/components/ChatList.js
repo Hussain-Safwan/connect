@@ -7,11 +7,13 @@ import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
 import "../styles/chatlist.css";
 import ChatListHeader from "./ChatListHeader";
+import { MyContext } from "../context";
 
-function ChatList(props) {
+function ChatList() {
+  const { context, setContext } = React.useContext(MyContext);
+  const { user, threadList, selectedThread } = context;
+
   const [selected, setSelected] = React.useState(0);
-
-  props.selectThread(props.threadList[selected]);
 
   const trim = (text, limit) => {
     return text.length < limit ? text : text.substring(0, limit) + "...";
@@ -19,24 +21,46 @@ function ChatList(props) {
 
   return (
     <div className="list">
-      <ChatListHeader contactList={props.threadList} />
-      <List sx={{ width: "100%" }}>
-        {props.threadList.map((item, i) => (
-          <ListItem
-            onClick={() => {
-              setSelected(i);
-            }}
-            className={i == selected ? "list-item selected-item" : "list-item"}
-          >
-            <ListItemAvatar>
-              <Avatar>
-                <ImageIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={item.name} secondary={"@" + item.username} />
-          </ListItem>
-        ))}
-      </List>
+      <ChatListHeader />
+      {threadList.length < 1 ? (
+        <p className="alert-msg">No conversations found</p>
+      ) : (
+        <List sx={{ width: "100%" }}>
+          {threadList.map((item, i) => (
+            <ListItem
+              onClick={() => {
+                setContext((ctx) => ({
+                  ...ctx,
+                  selectedThread: threadList[i],
+                }));
+              }}
+              className={
+                JSON.stringify(item) == JSON.stringify(selectedThread)
+                  ? "list-item selected-item"
+                  : "list-item"
+              }
+            >
+              <ListItemAvatar>
+                <Avatar>
+                  <ImageIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  item.participants.length < 3
+                    ? item.participants[0].name
+                    : item.name
+                }
+                secondary={
+                  item.participants.length < 3
+                    ? "@" + item.participants[0].username
+                    : item.participants.length + " people"
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
     </div>
   );
 }

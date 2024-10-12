@@ -59,9 +59,10 @@ function ChatListHeader() {
     setGroupName(e.target.value);
   };
   const addContact = () => {
-    setContactUsername("");
+    // setContactUsername("");
+    console.log(threadList);
     const index = threadList.findIndex((item) => {
-      return item.username === contactUsername;
+      return item.participants[0].username === contactUsername;
     });
 
     if (
@@ -91,20 +92,34 @@ function ChatListHeader() {
       },
       { withCredentials: true }
     );
-    console.log(res.data);
+
     if (res.data) {
       const tempList = threadList;
       tempList.push(res.data.data);
       setContext((ctx) => ({ ...ctx, threadList: tempList }));
     }
   };
-  const submitGroupThread = () => {
+
+  const submitGroupThread = async () => {
     const thread = {
       name: groupName,
       participants: addedContacts,
     };
 
-    console.log(thread);
+    const res = await axios.post(
+      "http://localhost:4000/api/group",
+      {
+        thread,
+        userId: user._id,
+      },
+      { withCredentials: true }
+    );
+
+    if (res.data) {
+      const tempList = threadList;
+      tempList.push(res.data.data);
+      setContext((ctx) => ({ ...ctx, threadList: tempList }));
+    }
   };
 
   return (
@@ -194,7 +209,10 @@ function ChatListHeader() {
                       <ImageIcon />
                     </Avatar>
                   </ListItemAvatar>
-                  <ListItemText primary={item.name} secondary={item.username} />
+                  <ListItemText
+                    primary={item.participants[0].name}
+                    secondary={item.participants[0].username}
+                  />
                   <CancelIcon
                     color="error"
                     onClick={() => removeContact(item.username)}
