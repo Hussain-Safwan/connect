@@ -13,10 +13,7 @@ function Layout() {
   console.log(threadList);
   const navigate = useNavigate();
 
-  if (context.user === null) navigate("/login");
-
-  // const [threadList, setThreadList] = React.useState([]);
-  // const [user, setUser] = React.useState(null);
+  if (user === null) navigate("/login");
 
   const [selected, setSelected] = React.useState({});
   const selectThread = (thread) => {
@@ -25,11 +22,7 @@ function Layout() {
 
   return (
     <div className="layout">
-      <ChatList
-        selectThread={selectThread}
-        threadList={threadList}
-        className="chat-list"
-      />
+      <ChatList className="chat-list" />
       {threadList.length < 1 ? (
         <div>No conversation thread selected</div>
       ) : (

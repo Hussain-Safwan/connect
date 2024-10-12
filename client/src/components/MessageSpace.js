@@ -90,8 +90,16 @@ function MessageSpace() {
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={selectedThread.participants[1].name}
-                secondary={"@" + selectedThread.participants[1].username}
+                primary={
+                  selectedThread.participants < 3
+                    ? selectedThread.participants[0].name
+                    : selectedThread.name
+                }
+                secondary={
+                  selectedThread.participants < 3
+                    ? "@" + selectedThread.participants[0].username
+                    : selectedThread.participants.length + " people"
+                }
               />
             </ListItem>
           </List>
