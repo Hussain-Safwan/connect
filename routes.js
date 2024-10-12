@@ -67,7 +67,7 @@ routes.post("/login", passport.authenticate("local"), async (req, res) => {
   threadList.forEach((thread) => {
     const part = thread.participants.filter(
       (item) => item.username !== req.user.username
-    )[0];
+    );
     thread.participants = part;
     tempThreadList.push(thread);
   });
@@ -137,12 +137,17 @@ routes.post("/group", async (req, res) => {
   });
 });
 
-routes.post("/send-message", isLoggedIn, async (req, res) => {
-  const { threadId, content } = req.body;
+routes.post("/send-message", async (req, res) => {
+  const { threadId, userId, content } = req.body;
   const thread = await threadModel.findById(threadId);
+  const currentUser = await userModel.findById(userId);
+
+  thread.participants = thread.participants.filter(
+    (item) => item.username !== currentUser.username
+  );
 
   thread.messages.push({
-    sender: req.user,
+    sender: currentUser,
     content,
   });
 
