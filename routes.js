@@ -46,25 +46,31 @@ passport.deserializeUser(async function (id, done) {
   done(null, user);
 });
 
-routes.get("/user", isLoggedIn, (req, res) => {
+routes.get("/user", isLoggedIn, async (req, res) => {
+  const threadList = await threadModel.find({
+    participants: { $in: [req.user] },
+  });
+  console.log(threadList);
   res.json({
     success: true,
     message: "User logged in",
-    data: req.user,
+    data: { user: req.user, threadList },
   });
 });
 
-routes.post("/login", passport.authenticate("local"), (req, res) => {
-  res.cookie("user", req.user);
+routes.post("/login", passport.authenticate("local"), async (req, res) => {
+  const threadList = await threadModel.find({
+    participants: { $in: [req.user] },
+  });
   res.json({
     success: true,
     message: "Login successful",
-    data: req.user,
+    data: { user: req.user, threadList },
   });
 });
 
 routes.post("/save", async (req, res) => {
-  const { name, phone, username, password } = req.body;
+  const { name, username, password } = req.body;
 
   const existingUser = await userModel.findOne({ username });
   if (existingUser) {
@@ -72,7 +78,7 @@ routes.post("/save", async (req, res) => {
       .status(404)
       .send({ success: false, message: "Username already taken", data: null });
   } else {
-    const user = new userModel({ name, phone, username, password });
+    const user = new userModel({ name, username, password });
     user.save();
     console.log("user saved");
     res
@@ -81,12 +87,14 @@ routes.post("/save", async (req, res) => {
   }
 });
 
-routes.post("/thread", isLoggedIn, async (req, res) => {
-  const { receiverId } = req.body;
-
+routes.post("/thread", async (req, res) => {
+  const { username, userId } = req.body;
+  const currentUser = await userModel.findById(userId);
+  console.log(username);
+  const receiver = await userModel.findOne({ username });
   const thread = new threadModel({
     name: "",
-    participantIds: [req.user.id, receiverId],
+    participants: [currentUser, receiver],
     messages: [],
   });
 

@@ -2,19 +2,23 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: String,
-  phone: String,
   username: String,
   password: String,
 });
 
 const threadSchema = new mongoose.Schema({
   name: String,
-  participantIds: [String],
+  participants: [
+    {
+      name: String,
+      username: String,
+      password: String,
+    },
+  ],
   messages: [
     {
       sender: {
         name: String,
-        phone: String,
         username: String,
         password: String,
       },
