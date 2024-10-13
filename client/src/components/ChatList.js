@@ -17,7 +17,7 @@ function ChatList() {
     <div className="list">
       <ChatListHeader />
       {threadList.length < 1 ? (
-        <p className="alert-msg">No conversations found</p>
+        <p className="alert-msg">Please add contacts to start messaging.</p>
       ) : (
         <List sx={{ width: "100%" }}>
           {threadList.map((item, i) => (

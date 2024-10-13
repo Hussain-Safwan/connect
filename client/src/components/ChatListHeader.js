@@ -28,6 +28,7 @@ function ChatListHeader() {
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [alert, setAlert] = React.useState("");
 
   const style = {
     position: "absolute",
@@ -74,7 +75,10 @@ function ChatListHeader() {
     ) {
       console.log(threadList[index].participants);
       setAddedContacts([threadList[index].participants[0], ...addedContacts]);
-    } else setOpenSnackbar(true);
+    } else {
+      setAlert("Username not found on your list of contacts");
+      setOpenSnackbar(true);
+    }
     setContactUsername("");
   };
 
@@ -89,21 +93,23 @@ function ChatListHeader() {
   const submitCode = async () => {
     setOpenNewModal(false);
 
-    const res = await axios.post(
-      "http://localhost:4000/api/thread",
-      {
-        username: codeValue,
-        userId: user._id,
-      },
-      { withCredentials: true }
-    );
-
-    if (res.data) {
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/thread",
+        {
+          username: codeValue,
+          userId: user._id,
+        },
+        { withCredentials: true }
+      );
       setContext((ctx) => ({
         ...ctx,
         threadList: [res.data.data, ...threadList],
         selectedThread: res.data.data,
       }));
+    } catch (error) {
+      setAlert("Incorrect username or group token.");
+      setOpenSnackbar(true);
     }
   };
 
@@ -138,7 +144,7 @@ function ChatListHeader() {
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        message="Username not found on your list of contacts"
+        message={alert}
       />
       <Modal
         open={openNewModal}
@@ -155,11 +161,11 @@ function ChatListHeader() {
           <div style={{ display: "flex", justifyContent: "space-around" }}>
             <TextField
               id="outlined-basic"
-              label="Enter username"
+              label="Enter username or group token"
               variant="outlined"
               onChange={(e) => onCodeValueChange(e)}
             />
-            <Button variant="contained" onClick={submitCode}>
+            <Button variant="contained" color="success" onClick={submitCode}>
               Add
             </Button>
           </div>
