@@ -182,7 +182,12 @@ function MessageSpace() {
         onClose={handleSnackbarClose}
         message="Username not found on your list of contacts"
       />
-      <div className="header" onClick={setOpenGroupModal}>
+      <div
+        className="header"
+        onClick={() => {
+          if (selectedThread.owner) setOpenGroupModal(true);
+        }}
+      >
         {selectedThread && (
           <List sx={{ width: "100%" }}>
             <ListItem className="">
@@ -193,14 +198,14 @@ function MessageSpace() {
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  selectedThread.participants.length == 1
-                    ? selectedThread.participants[0].name
-                    : selectedThread.name
+                  selectedThread.owner
+                    ? selectedThread.name
+                    : selectedThread.participants[0].name
                 }
                 secondary={
-                  selectedThread.participants.length == 1
-                    ? "@" + selectedThread.participants[0].username
-                    : selectedThread.participants.length + 1 + " people"
+                  selectedThread.owner
+                    ? selectedThread.participants.length + 1 + " people"
+                    : "@" + selectedThread.participants[0].username
                 }
               />
             </ListItem>

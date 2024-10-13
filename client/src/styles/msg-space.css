@@ -22,6 +22,8 @@
 
 .messages {
   padding: 20px 30px;
+  overflow-y: scroll;
+  max-height: 54vh;
 }
 
 .message {
@@ -30,6 +32,17 @@
   background: #eee;
   display: inline-block;
   border-radius: 10px;
+  min-width: 20%;
+  max-width: 40%;
+}
+.message-header {
+  font-size: 10px;
+  color: #999;
+  display: flex;
+  justify-content: space-between;
+}
+.message-header strong {
+  color: #666;
 }
 
 .right {

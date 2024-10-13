@@ -40,15 +40,11 @@ function ChatList() {
                 />
               </ListItemAvatar>
               <ListItemText
-                primary={
-                  item.participants.length < 2
-                    ? item.participants[0].name
-                    : item.name
-                }
+                primary={item.owner ? item.name : item.participants[0].name}
                 secondary={
-                  item.participants.length < 2
-                    ? "@" + item.participants[0].username
-                    : item.participants.length + 1 + " people"
+                  item.owner
+                    ? item.participants.length + 1 + " people"
+                    : "@" + item.participants[0].username
                 }
               />
             </ListItem>
