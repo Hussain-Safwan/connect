@@ -3,6 +3,8 @@ import "../styles/login.css";
 import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+
 import axios from "axios";
 import { MyContext } from "../context";
 
@@ -12,35 +14,37 @@ function Login() {
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   const onUsernameChange = (e) => setUsername(e.target.value);
   const onPasswordChange = (e) => setPassword(e.target.value);
 
-  const submit = () => {
-    const login = async () => {
+  const submit = async () => {
+    try {
       const res = await axios.post("http://localhost:4000/api/login/", {
         username,
         password,
       });
-
-      if (res.data.success) {
-        const { user, threadList } = res.data.data;
-        setContext({
-          user: user,
-          threadList: threadList,
-          selectedThread: threadList.length === 0 ? null : threadList[0],
-        });
-        navigate("/");
-      } else {
-        console.log(res.data.message);
-      }
-    };
-
-    login();
+      const { user, threadList } = res.data.data;
+      setContext({
+        user: user,
+        threadList: threadList,
+        selectedThread: threadList.length === 0 ? null : threadList[0],
+      });
+      navigate("/");
+    } catch (error) {
+      setOpenSnackbar(true);
+    }
   };
 
   return (
     <div className="login">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        message="Invalid username or passowrd"
+      />
       <div className="box">
         <h1>
           Welcome to <span>Connect</span>
@@ -75,7 +79,12 @@ function Login() {
           >
             Create Account
           </Button>
-          <Button variant="contained" color="success" onClick={submit}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={submit}
+            disabled={username === "" || password === ""}
+          >
             Login
           </Button>
         </div>
