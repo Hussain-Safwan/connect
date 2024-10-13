@@ -26,11 +26,13 @@ function Login() {
         password,
       });
       const { user, threadList } = res.data.data;
-      setContext({
+      const ctx = {
         user: user,
         threadList: threadList,
         selectedThread: threadList.length === 0 ? null : threadList[0],
-      });
+      };
+      localStorage.setItem("connect", JSON.stringify(ctx));
+      setContext(ctx);
       navigate("/");
     } catch (error) {
       setOpenSnackbar(true);
