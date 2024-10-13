@@ -123,9 +123,11 @@ function ChatListHeader() {
     );
 
     if (res.data) {
-      const tempList = threadList;
-      tempList.push(res.data.data);
-      setContext((ctx) => ({ ...ctx, threadList: tempList }));
+      setContext((ctx) => ({
+        ...ctx,
+        threadList: [res.data.data, ...threadList],
+        selectedThread: res.data.data,
+      }));
     }
   };
 
