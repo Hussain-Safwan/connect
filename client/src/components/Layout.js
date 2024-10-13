@@ -10,15 +10,9 @@ function Layout() {
   axios.defaults.withCredentials = true;
   const { context, setContext } = React.useContext(MyContext);
   const { user, threadList, selectedThread } = context;
-  console.log(threadList);
   const navigate = useNavigate();
 
-  if (user === null) navigate("/login");
-
-  const [selected, setSelected] = React.useState({});
-  const selectThread = (thread) => {
-    setSelected(thread);
-  };
+  if (user == null) navigate("/login");
 
   return (
     <div className="layout">
