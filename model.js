@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
 
 const threadSchema = new mongoose.Schema({
   name: String,
+  token: String,
   owner: {
     name: String,
     username: String,

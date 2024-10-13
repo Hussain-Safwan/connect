@@ -182,12 +182,7 @@ function MessageSpace() {
         onClose={handleSnackbarClose}
         message="Username not found on your list of contacts"
       />
-      <div
-        className="header"
-        onClick={() => {
-          if (selectedThread.owner) setOpenGroupModal(true);
-        }}
-      >
+      <div className="header">
         <List sx={{ width: "100%" }}>
           {selectedThread && (
             <ListItem className="">
@@ -198,14 +193,30 @@ function MessageSpace() {
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  selectedThread.owner
-                    ? selectedThread.name
-                    : selectedThread.participants[0].name
+                  selectedThread.owner ? (
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        if (selectedThread.owner) setOpenGroupModal(true);
+                      }}
+                    >
+                      {selectedThread.name}
+                    </span>
+                  ) : (
+                    selectedThread.participants[0].name
+                  )
                 }
                 secondary={
-                  selectedThread.owner
-                    ? selectedThread.participants.length + 1 + " people"
-                    : "@" + selectedThread.participants[0].username
+                  selectedThread.owner ? (
+                    <span>
+                      {selectedThread.participants.length + 1 + " people"}
+                      <span className="group-token">
+                        {"@" + selectedThread.token}
+                      </span>
+                    </span>
+                  ) : (
+                    "@" + selectedThread.participants[0].username
+                  )
                 }
               />
             </ListItem>
@@ -272,11 +283,6 @@ function MessageSpace() {
               <Typography id="modal-modal-title" variant="h6" component="h2">
                 {selectedThread.name}
               </Typography>
-              <br />
-
-              <div className="group-link">
-                {"http://www.connect.com/join/23er23"}
-              </div>
               <br />
 
               {selectedThread.owner &&

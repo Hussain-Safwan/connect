@@ -24,6 +24,15 @@ const isLoggedIn = (req, res, done) => {
   res.json(null);
 };
 
+const genHexString = (len) => {
+  const hex = "0123456789abcdef";
+  let output = "";
+  for (let i = 0; i < len; ++i) {
+    output += hex.charAt(Math.floor(Math.random() * hex.length));
+  }
+  return output;
+};
+
 passport.use(
   new localStrategy(async function verify(username, password, done) {
     const user = await userModel.findOne({ username });
@@ -110,22 +119,46 @@ routes.post("/thread", async (req, res) => {
   const { username, userId } = req.body;
   const currentUser = await userModel.findById(userId);
   const receiver = await userModel.findOne({ username });
-  const thread = new threadModel({
-    name: "",
-    participants: [currentUser, receiver],
-    messages: [],
-  });
 
-  await thread.save();
+  if (receiver) {
+    const thread = new threadModel({
+      name: "",
+      participants: [currentUser, receiver],
+      messages: [],
+    });
 
-  thread.participants = thread.participants.filter(
-    (item) => item._id !== currentUser._id
-  );
-  res.status(200).json({
-    success: true,
-    message: "Message sent to new thread",
-    data: thread,
-  });
+    await thread.save();
+
+    thread.participants = thread.participants.filter(
+      (item) => item._id !== currentUser._id
+    );
+    res.status(200).json({
+      success: true,
+      message: "Message sent to new thread",
+      data: thread,
+    });
+  } else {
+    const group = await threadModel.findOne({ token: username });
+    if (group) {
+      group.participants.push(currentUser);
+      group.save();
+
+      group.participants = group.participants.filter(
+        (item) => item._id !== currentUser._id
+      );
+      res.status(200).json({
+        success: true,
+        message: "Message sent to new group",
+        data: group,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "No contact or group found",
+        data: {},
+      });
+    }
+  }
 });
 
 routes.post("/group", async (req, res) => {
@@ -134,6 +167,7 @@ routes.post("/group", async (req, res) => {
 
   const newThread = new threadModel({
     name: thread.name,
+    token: genHexString(6),
     owner: currentUser,
     participants: [...thread.participants, currentUser],
     messages: [],
