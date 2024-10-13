@@ -35,9 +35,9 @@ function ChatList() {
               }
             >
               <ListItemAvatar>
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
+                <Avatar
+                  src={`https://robohash.org/${threadList[i].participants[0].username}`}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={

@@ -212,9 +212,7 @@ function ChatListHeader() {
               {addedContacts.map((item, i) => (
                 <ListItem className="list-item">
                   <ListItemAvatar>
-                    <Avatar>
-                      <ImageIcon />
-                    </Avatar>
+                    <Avatar src={`https://robohash.org/${item.username}`} />
                   </ListItemAvatar>
                   <ListItemText primary={item.name} secondary={item.username} />
                   <CancelIcon

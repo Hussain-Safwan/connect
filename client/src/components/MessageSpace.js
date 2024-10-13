@@ -166,9 +166,9 @@ function MessageSpace() {
           <List sx={{ width: "100%" }}>
             <ListItem className="">
               <ListItemAvatar>
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
+                <Avatar
+                  src={`https://robohash.org/${selectedThread.participants[0].username}`}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={
@@ -273,9 +273,7 @@ function MessageSpace() {
               {addedContacts.map((item, i) => (
                 <ListItem className="list-item">
                   <ListItemAvatar>
-                    <Avatar>
-                      <ImageIcon />
-                    </Avatar>
+                    <Avatar src={`https://robohash.org/${item.username}`} />
                   </ListItemAvatar>
                   <ListItemText primary={item.name} secondary={item.username} />
                   <CancelIcon
