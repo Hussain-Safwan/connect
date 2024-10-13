@@ -11,6 +11,7 @@ import Modal from "@mui/material/Modal";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
 
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
@@ -23,14 +24,17 @@ function MessageSpace() {
   const navigate = useNavigate();
   const [message, setMessage] = React.useState("");
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
-  const [groupName, setGroupName] = React.useState("");
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  let [messageList, setMessageList] = React.useState([]);
+
+  React.useEffect(() => {
+    if (selectedThread) {
+      setAddedContacts([...selectedThread.participants]);
+    }
+  }, [selectedThread]);
 
   const submitMessage = async () => {
-    console.log(selectedThread);
     const res = await axios.post(
       "http://localhost:4000/api/send-message",
       {
@@ -54,26 +58,33 @@ function MessageSpace() {
     }
     setMessage("");
   };
+
   const handleGroupModalClose = () => {
     setOpenGroupModal(false);
     setContactUsername("");
-    setAddedContacts([]);
   };
+
   const onContactUsernameChange = (e) => {
     setContactUsername(e.target.value);
   };
-  const handleGroupNameChange = (e) => {
-    setGroupName(e.target.value);
-  };
+
   const addContact = () => {
-    setContactUsername("");
     const index = threadList.findIndex((item) => {
-      return item.username === contactUsername;
+      return (
+        item.participants.length === 1 &&
+        item.participants[0].username === contactUsername
+      );
     });
 
-    if (index !== -1) {
-      setAddedContacts([threadList[index], ...addedContacts]);
+    if (
+      index !== -1 &&
+      addedContacts.findIndex((item) => item.username === contactUsername) ===
+        -1
+    ) {
+      console.log(threadList[index].participants);
+      setAddedContacts([threadList[index].participants[0], ...addedContacts]);
     } else setOpenSnackbar(true);
+    setContactUsername("");
   };
   const removeContact = (username) => {
     const filteredList = addedContacts.filter(
@@ -81,12 +92,36 @@ function MessageSpace() {
     );
     setAddedContacts(filteredList);
   };
-  const submitGroupThread = () => {
+
+  const editGroupThread = async () => {
     const thread = {
-      name: groupName,
+      groupId: selectedThread._id,
       participants: addedContacts,
     };
+
+    const res = await axios.put(
+      "http://localhost:4000/api/group",
+      {
+        thread,
+        userId: user._id,
+      },
+      { withCredentials: true }
+    );
+
+    if (res.data) {
+      const index = threadList.findIndex(
+        (item) => item._id === selectedThread._id
+      );
+      const tempThreadList = threadList;
+      tempThreadList[index] = res.data.data;
+      setContext((ctx) => ({
+        ...ctx,
+        threadList: tempThreadList,
+        selectedThread: res.data.data,
+      }));
+    }
   };
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -101,8 +136,31 @@ function MessageSpace() {
     setContext({ user: null, threadList: [], selectedThread: null });
     navigate("/login");
   };
+
+  const formatDate = (date) => {
+    date = new Date(date);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const month = date
+      .toLocaleString("default", { month: "long" })
+      .substring(0, 3);
+    const day = date.getDate();
+
+    return `${hours}:${minutes.toString().padStart(2, "0")}, ${month} ${day}`;
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
     <div className="msg-space">
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="Username not found on your list of contacts"
+      />
       <div className="header" onClick={setOpenGroupModal}>
         {selectedThread && (
           <List sx={{ width: "100%" }}>
@@ -141,7 +199,13 @@ function MessageSpace() {
         {selectedThread.messages.map((item, i) =>
           item.sender.username !== user.username ? (
             <>
-              <div className="message left">{item.content}</div>
+              <div className="message left">
+                <div className="message-header">
+                  <strong>{"@" + item.sender.username}</strong>
+                  <span>{formatDate(item.sendingTime)}</span>
+                </div>
+                {item.content}
+              </div>
               <br />
             </>
           ) : (
@@ -177,12 +241,7 @@ function MessageSpace() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            onChange={handleGroupNameChange}
-            variant="h6"
-            component="h2"
-          >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
             {selectedThread.name}
           </Typography>
           <br />
@@ -228,12 +287,8 @@ function MessageSpace() {
             </List>
           </div>
 
-          <Button
-            variant="contained"
-            color="success"
-            onClick={submitGroupThread}
-          >
-            Create
+          <Button variant="contained" color="success" onClick={editGroupThread}>
+            Save Changes
           </Button>
         </Box>
       </Modal>
