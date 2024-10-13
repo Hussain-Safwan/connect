@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema({
 
 const threadSchema = new mongoose.Schema({
   name: String,
+  owner: {
+    name: String,
+    username: String,
+    password: String,
+  },
   participants: [
     {
       name: String,

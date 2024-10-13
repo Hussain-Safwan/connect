@@ -128,6 +128,29 @@ routes.post("/thread", async (req, res) => {
   });
 });
 
+routes.post("/group", async (req, res) => {
+  const { thread, userId } = req.body;
+  const currentUser = await userModel.findById(userId);
+
+  const newThread = new threadModel({
+    name: thread.name,
+    owner: currentUser,
+    participants: [...thread.participants, currentUser],
+    messages: [],
+  });
+
+  await newThread.save();
+
+  newThread.participants = newThread.participants.filter(
+    (item) => item._id !== currentUser._id
+  );
+  res.status(200).json({
+    success: true,
+    message: "Message sent to new thread",
+    data: newThread,
+  });
+});
+
 routes.put("/group", async (req, res) => {
   const { thread, userId } = req.body;
   const { groupId, participants } = thread;
