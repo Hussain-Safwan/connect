@@ -68,6 +68,7 @@ function Login() {
             label="Password"
             variant="outlined"
             className="textbox"
+            type="password"
             value={password}
             onChange={(e) => onPasswordChange(e)}
           />
