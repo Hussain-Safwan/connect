@@ -155,6 +155,7 @@ function MessageSpace() {
 
   const logout = () => {
     setContext({ user: null, threadList: [], selectedThread: null });
+    localStorage.setItem("connect", null);
     navigate("/login");
   };
 

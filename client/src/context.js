@@ -10,7 +10,7 @@ export const MyProvider = ({ children }) => {
   });
 
   const ctx = localStorage.getItem("connect");
-  if (ctx && context.user === null) {
+  if (ctx && context?.user === null) {
     setContext(JSON.parse(ctx));
   }
 
