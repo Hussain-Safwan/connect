@@ -112,7 +112,7 @@ function ChatListHeader() {
       name: groupName,
       participants: addedContacts,
     };
-    console.log(thread);
+
     const res = await axios.post(
       "http://localhost:4000/api/group",
       {
@@ -128,6 +128,7 @@ function ChatListHeader() {
         threadList: [res.data.data, ...threadList],
         selectedThread: res.data.data,
       }));
+      handleGroupModalClose();
     }
   };
 

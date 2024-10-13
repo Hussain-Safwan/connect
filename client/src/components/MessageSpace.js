@@ -119,6 +119,27 @@ function MessageSpace() {
         threadList: tempThreadList,
         selectedThread: res.data.data,
       }));
+      handleGroupModalClose();
+    }
+  };
+
+  const leaveGroup = async () => {
+    const res = await axios.get(
+      `http://localhost:4000/api/leave/${selectedThread._id}/${user.username}`,
+      { withCredentials: true }
+    );
+
+    if (res.data) {
+      const tempList = threadList.filter(
+        (item) => item._id !== selectedThread._id
+      );
+      setContext((ctx) => ({
+        ...ctx,
+        threadList: tempList,
+        selectedThread: tempList.length === 0 ? null : tempList[0],
+      }));
+
+      handleGroupModalClose();
     }
   };
 
@@ -250,44 +271,65 @@ function MessageSpace() {
             {"http://www.connect.com/join/23er23"}
           </div>
           <br />
-          <div>
-            <TextField
-              id="outlined-basic"
-              label="Enter participant's username"
-              variant="standard"
-              onChange={(e) => onContactUsernameChange(e)}
-            />
-            <Button
-              variant="outlined"
-              onClick={addContact}
-              color="success"
-              style={{ marginLeft: "20px", marginTop: "10px" }}
-            >
-              Add
-            </Button>
-          </div>
-          <br />
 
-          <div className="added-contacts">
-            <List sx={{ width: "100%" }}>
-              {addedContacts.map((item, i) => (
-                <ListItem className="list-item">
-                  <ListItemAvatar>
-                    <Avatar src={`https://robohash.org/${item.username}`} />
-                  </ListItemAvatar>
-                  <ListItemText primary={item.name} secondary={item.username} />
-                  <CancelIcon
-                    color="error"
-                    onClick={() => removeContact(item.username)}
+          {selectedThread.owner &&
+            selectedThread.owner.username === user.username && (
+              <>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Enter participant's username"
+                    variant="standard"
+                    onChange={(e) => onContactUsernameChange(e)}
                   />
-                </ListItem>
-              ))}
-            </List>
-          </div>
+                  <Button
+                    variant="outlined"
+                    onClick={addContact}
+                    color="success"
+                    style={{ marginLeft: "20px", marginTop: "10px" }}
+                  >
+                    Add
+                  </Button>
+                </div>
+                <br />
+                <div className="added-contacts">
+                  <List sx={{ width: "100%" }}>
+                    {addedContacts.map((item, i) => (
+                      <ListItem className="list-item">
+                        <ListItemAvatar>
+                          <Avatar
+                            src={`https://robohash.org/${item.username}`}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={item.name}
+                          secondary={item.username}
+                        />
+                        <CancelIcon
+                          color="error"
+                          onClick={() => removeContact(item.username)}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </div>
+              </>
+            )}
 
-          <Button variant="contained" color="success" onClick={editGroupThread}>
-            Save Changes
-          </Button>
+          {selectedThread.owner &&
+          selectedThread.owner.username === user.username ? (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={editGroupThread}
+            >
+              Save Changes
+            </Button>
+          ) : (
+            <Button variant="contained" color="error" onClick={leaveGroup}>
+              Leave Group
+            </Button>
+          )}
         </Box>
       </Modal>
     </div>

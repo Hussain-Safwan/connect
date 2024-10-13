@@ -194,4 +194,21 @@ routes.post("/send-message", async (req, res) => {
   });
 });
 
+routes.get("/leave/:groupId/:username", async (req, res) => {
+  const { groupId, username } = req.params;
+  const group = await threadModel.findById(groupId);
+  console.log(groupId, username);
+
+  group.participants = group.participants.filter(
+    (item) => item.username !== username
+  );
+  await group.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Group left",
+    data: {},
+  });
+});
+
 module.exports = routes;
