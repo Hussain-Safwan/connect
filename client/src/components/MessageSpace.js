@@ -188,8 +188,8 @@ function MessageSpace() {
           if (selectedThread.owner) setOpenGroupModal(true);
         }}
       >
-        {selectedThread && (
-          <List sx={{ width: "100%" }}>
+        <List sx={{ width: "100%" }}>
+          {selectedThread && (
             <ListItem className="">
               <ListItemAvatar>
                 <Avatar
@@ -209,8 +209,9 @@ function MessageSpace() {
                 }
               />
             </ListItem>
-          </List>
-        )}
+          )}
+        </List>
+
         <Button
           color="error"
           variant="outlined"
@@ -221,122 +222,129 @@ function MessageSpace() {
         </Button>
       </div>
 
-      <div className="messages">
-        {selectedThread.messages.map((item, i) =>
-          item.sender.username !== user.username ? (
-            <>
-              <div className="message left">
-                <div className="message-header">
-                  <strong>{"@" + item.sender.username}</strong>
-                  <span>{formatDate(item.sendingTime)}</span>
-                </div>
-                {item.content}
-              </div>
-              <br />
-            </>
-          ) : (
-            <>
-              <div style={{ display: "flex" }}>
-                <span />
-                <div className="message right">{item.content}</div>
-              </div>
-            </>
-          )
-        )}
-      </div>
-
-      <div className="footer">
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="success"
-          onClick={submitMessage}
-          disabled={message === ""}
-        >
-          Send
-        </Button>
-      </div>
-
-      <Modal
-        open={openGroupModal}
-        onClose={handleGroupModalClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {selectedThread.name}
-          </Typography>
-          <br />
-
-          <div className="group-link">
-            {"http://www.connect.com/join/23er23"}
-          </div>
-          <br />
-
-          {selectedThread.owner &&
-            selectedThread.owner.username === user.username && (
-              <>
-                <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Enter participant's username"
-                    variant="standard"
-                    onChange={(e) => onContactUsernameChange(e)}
-                  />
-                  <Button
-                    variant="outlined"
-                    onClick={addContact}
-                    color="success"
-                    style={{ marginLeft: "20px", marginTop: "10px" }}
-                  >
-                    Add
-                  </Button>
-                </div>
-                <br />
-                <div className="added-contacts">
-                  <List sx={{ width: "100%" }}>
-                    {addedContacts.map((item, i) => (
-                      <ListItem className="list-item">
-                        <ListItemAvatar>
-                          <Avatar
-                            src={`https://robohash.org/${item.username}`}
-                          />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={item.name}
-                          secondary={item.username}
-                        />
-                        <CancelIcon
-                          color="error"
-                          onClick={() => removeContact(item.username)}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </div>
-              </>
+      {selectedThread ? (
+        <>
+          <div className="messages">
+            {selectedThread.messages.map((item, i) =>
+              item.sender.username !== user.username ? (
+                <>
+                  <div className="message left">
+                    <div className="message-header">
+                      <strong>{"@" + item.sender.username}</strong>
+                      <span>{formatDate(item.sendingTime)}</span>
+                    </div>
+                    {item.content}
+                  </div>
+                  <br />
+                </>
+              ) : (
+                <>
+                  <div style={{ display: "flex" }}>
+                    <span />
+                    <div className="message right">{item.content}</div>
+                  </div>
+                </>
+              )
             )}
+          </div>
 
-          {selectedThread.owner &&
-          selectedThread.owner.username === user.username ? (
+          <div className="footer">
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
             <Button
               variant="contained"
               color="success"
-              onClick={editGroupThread}
+              onClick={submitMessage}
+              disabled={message === ""}
             >
-              Save Changes
+              Send
             </Button>
-          ) : (
-            <Button variant="contained" color="error" onClick={leaveGroup}>
-              Leave Group
-            </Button>
-          )}
-        </Box>
-      </Modal>
+          </div>
+          <Modal
+            open={openGroupModal}
+            onClose={handleGroupModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                {selectedThread.name}
+              </Typography>
+              <br />
+
+              <div className="group-link">
+                {"http://www.connect.com/join/23er23"}
+              </div>
+              <br />
+
+              {selectedThread.owner &&
+                selectedThread.owner.username === user.username && (
+                  <>
+                    <div>
+                      <TextField
+                        id="outlined-basic"
+                        label="Enter participant's username"
+                        variant="standard"
+                        onChange={(e) => onContactUsernameChange(e)}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={addContact}
+                        color="success"
+                        style={{ marginLeft: "20px", marginTop: "10px" }}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                    <br />
+                    <div className="added-contacts">
+                      <List sx={{ width: "100%" }}>
+                        {addedContacts.map((item, i) => (
+                          <ListItem className="list-item">
+                            <ListItemAvatar>
+                              <Avatar
+                                src={`https://robohash.org/${item.username}`}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={item.name}
+                              secondary={item.username}
+                            />
+                            <CancelIcon
+                              color="error"
+                              onClick={() => removeContact(item.username)}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </div>
+                  </>
+                )}
+
+              {selectedThread.owner &&
+              selectedThread.owner.username === user.username ? (
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={editGroupThread}
+                >
+                  Save Changes
+                </Button>
+              ) : (
+                <Button variant="contained" color="error" onClick={leaveGroup}>
+                  Leave Group
+                </Button>
+              )}
+            </Box>
+          </Modal>
+        </>
+      ) : (
+        <p style={{ textAlign: "center", marginTop: "50px", color: "#aaa" }}>
+          Please select a conversation to view messages
+        </p>
+      )}
     </div>
   );
 }

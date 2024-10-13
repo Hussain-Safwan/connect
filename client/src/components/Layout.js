@@ -17,11 +17,7 @@ function Layout() {
   return (
     <div className="layout">
       <ChatList className="chat-list" />
-      {threadList.length < 1 ? (
-        <div>No conversation thread selected</div>
-      ) : (
-        <MessageSpace className="msg-space" />
-      )}
+      <MessageSpace className="msg-space" />
     </div>
   );
 }
