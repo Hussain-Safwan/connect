@@ -85,9 +85,9 @@ function ChatListHeader() {
     );
     setAddedContacts(filteredList);
   };
+
   const submitCode = async () => {
     setOpenNewModal(false);
-    console.log(codeValue);
 
     const res = await axios.post(
       "http://localhost:4000/api/thread",
@@ -99,9 +99,11 @@ function ChatListHeader() {
     );
 
     if (res.data) {
-      const tempList = threadList;
-      tempList.push(res.data.data);
-      setContext((ctx) => ({ ...ctx, threadList: tempList }));
+      setContext((ctx) => ({
+        ...ctx,
+        threadList: [res.data.data, ...threadList],
+        selectedThread: res.data.data,
+      }));
     }
   };
 
