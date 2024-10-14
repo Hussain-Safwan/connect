@@ -17,14 +17,13 @@ mongoose
   })
   .then(() => console.log("mongoose connected"));
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(bodyParser.json());
 app.use("/api/", routes);
 
-const port = 4000;
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Server is running at port: ${port}`));
