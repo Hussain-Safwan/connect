@@ -12,12 +12,21 @@ function Layout() {
   const { user, threadList, selectedThread } = context;
   const navigate = useNavigate();
 
-  if (user === null) navigate("/login");
+  React.useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }, []);
 
   return (
     <div className="layout">
-      <ChatList className="chat-list" />
-      <MessageSpace className="msg-space" />
+      {user && (
+        <>
+          <ChatList className="chat-list" />
+          <MessageSpace className="msg-space" />
+        </>
+      )}
     </div>
   );
 }
