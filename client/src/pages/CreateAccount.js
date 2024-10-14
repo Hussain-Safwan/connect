@@ -1,10 +1,10 @@
 import * as React from "react";
 import "../styles/login.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { post } from "../apiClient";
 
 function CreateAccount() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function CreateAccount() {
 
   const submit = async () => {
     try {
-      const res = await axios.post("http://localhost:4000/api/save", {
+      const res = await post("/save", {
         name,
         username,
         password,

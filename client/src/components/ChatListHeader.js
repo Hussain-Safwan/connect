@@ -12,15 +12,13 @@ import Avatar from "@mui/material/Avatar";
 import ImageIcon from "@mui/icons-material/Image";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
-import axios from "axios";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { MyContext } from "../context";
+import { post } from "../apiClient";
 
 function ChatListHeader() {
-  axios.defaults.withCredentials = true;
-
   const [openNewModal, setOpenNewModal] = React.useState(false);
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [codeValue, setCodeValue] = React.useState("");
@@ -94,14 +92,10 @@ function ChatListHeader() {
     setOpenNewModal(false);
 
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/thread",
-        {
-          username: codeValue,
-          userId: user._id,
-        },
-        { withCredentials: true }
-      );
+      const res = await post("/thread", {
+        username: codeValue,
+        userId: user._id,
+      });
       setContext((ctx) => ({
         ...ctx,
         threadList: [res.data.data, ...threadList],
@@ -119,14 +113,10 @@ function ChatListHeader() {
       participants: addedContacts,
     };
 
-    const res = await axios.post(
-      "http://localhost:4000/api/group",
-      {
-        thread,
-        userId: user._id,
-      },
-      { withCredentials: true }
-    );
+    const res = await post("/group", {
+      thread,
+      userId: user._id,
+    });
 
     if (res.data) {
       setContext((ctx) => ({

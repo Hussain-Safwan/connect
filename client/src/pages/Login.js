@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 
-import axios from "axios";
 import { MyContext } from "../context";
+import { post } from "../apiClient";
 
 function Login() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function Login() {
 
   const submit = async () => {
     try {
-      const res = await axios.post("http://localhost:4000/api/login/", {
+      const res = await post("/login/", {
         username,
         password,
       });

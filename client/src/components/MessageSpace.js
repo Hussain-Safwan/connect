@@ -16,7 +16,7 @@ import Snackbar from "@mui/material/Snackbar";
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { get, post, put } from "../apiClient";
 
 function MessageSpace() {
   const { context, setContext } = React.useContext(MyContext);
@@ -35,15 +35,11 @@ function MessageSpace() {
   }, [selectedThread]);
 
   const submitMessage = async () => {
-    const res = await axios.post(
-      "http://localhost:4000/api/send-message",
-      {
-        threadId: selectedThread._id,
-        userId: user._id,
-        content: message,
-      },
-      { withCredentials: true }
-    );
+    const res = await post("/send-message", {
+      threadId: selectedThread._id,
+      userId: user._id,
+      content: message,
+    });
 
     if (res.data) {
       const index = threadList.findIndex(
@@ -99,14 +95,10 @@ function MessageSpace() {
       participants: addedContacts,
     };
 
-    const res = await axios.put(
-      "http://localhost:4000/api/group",
-      {
-        thread,
-        userId: user._id,
-      },
-      { withCredentials: true }
-    );
+    const res = await put("/group", {
+      thread,
+      userId: user._id,
+    });
 
     if (res.data) {
       const index = threadList.findIndex(
@@ -124,10 +116,7 @@ function MessageSpace() {
   };
 
   const leaveGroup = async () => {
-    const res = await axios.get(
-      `http://localhost:4000/api/leave/${selectedThread._id}/${user.username}`,
-      { withCredentials: true }
-    );
+    const res = await get(`/leave/${selectedThread._id}/${user.username}`);
 
     if (res.data) {
       const tempList = threadList.filter(

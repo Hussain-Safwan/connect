@@ -12,7 +12,7 @@ function Layout() {
   const { user, threadList, selectedThread } = context;
   const navigate = useNavigate();
 
-  if (user == null) navigate("/login");
+  if (user === null) navigate("/login");
 
   return (
     <div className="layout">
