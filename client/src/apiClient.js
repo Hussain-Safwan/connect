@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:4000/api";
+// const baseURL = "http://localhost:4000/api";
+const baseURL = "https://connect-messenger-c89d40ea4488.herokuapp.com/api";
 
 const client = axios.create({
   baseURL,
