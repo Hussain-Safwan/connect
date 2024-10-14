@@ -4,7 +4,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
-import ImageIcon from "@mui/icons-material/Image";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -17,6 +16,7 @@ import "../styles/msg-space.css";
 import { MyContext } from "../context";
 import { useNavigate } from "react-router-dom";
 import { get, post, put } from "../apiClient";
+import AccountDialog from "./AccountDialog";
 
 function MessageSpace() {
   const { context, setContext } = React.useContext(MyContext);
@@ -27,6 +27,7 @@ function MessageSpace() {
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [openAccountDialog, setOpenAccountDialog] = React.useState(false);
 
   React.useEffect(() => {
     if (selectedThread) {
@@ -142,12 +143,6 @@ function MessageSpace() {
     p: 4,
   };
 
-  const logout = () => {
-    setContext({ user: null, threadList: [], selectedThread: null });
-    localStorage.setItem("connect", null);
-    navigate("/login");
-  };
-
   const formatDate = (date) => {
     date = new Date(date);
     const hours = date.getHours();
@@ -171,6 +166,10 @@ function MessageSpace() {
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
         message="Username not found on your list of contacts"
+      />
+      <AccountDialog
+        open={openAccountDialog}
+        handleClose={() => setOpenAccountDialog(false)}
       />
       <div className="header">
         <List sx={{ width: "100%" }}>
@@ -212,15 +211,11 @@ function MessageSpace() {
             </ListItem>
           )}
         </List>
-
-        <Button
-          color="error"
-          variant="outlined"
+        <Avatar
           className="logout-btn"
-          onClick={logout}
-        >
-          Logout
-        </Button>
+          src={`https://robohash.org/${user.username}`}
+          onClick={() => setOpenAccountDialog(true)}
+        />
       </div>
 
       {selectedThread ? (
