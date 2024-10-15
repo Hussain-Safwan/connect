@@ -35,6 +35,10 @@ function MessageSpace() {
     }
   }, [selectedThread]);
 
+  const msgRef=React.useRef(null)
+  const scroll=()=>{msgRef.current.scrollIntoView(false)}
+  React.useEffect(()=>{scroll()}, [selectedThread.messages])
+
   const submitMessage = async () => {
     const res = await post("/send-message", {
       threadId: selectedThread._id,
@@ -237,7 +241,7 @@ function MessageSpace() {
                 <>
                   <div style={{ display: "flex" }}>
                     <span />
-                    <div className="message right">{item.content}
+                    <div ref={msgRef} className="message right">{item.content}
                     <div className="message-header">
                       <strong></strong>
                       <span style={{color: '#fff'}}>{formatDate(item.sendingTime)}</span>
