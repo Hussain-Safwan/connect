@@ -237,7 +237,11 @@ function MessageSpace() {
                 <>
                   <div style={{ display: "flex" }}>
                     <span />
-                    <div className="message right">{item.content}</div>
+                    <div className="message right">{item.content}
+                    <div className="message-header">
+                      <strong></strong>
+                      <span style={{color: '#fff'}}>{formatDate(item.sendingTime)}</span>
+                    </div></div>
                   </div>
                 </>
               )
@@ -247,6 +251,7 @@ function MessageSpace() {
           <div className="footer">
             <textarea
               value={message}
+              placeholder="Type your message here"
               onChange={(e) => setMessage(e.target.value)}
             />
             <Button

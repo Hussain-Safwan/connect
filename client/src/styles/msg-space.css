@@ -33,7 +33,7 @@
 .messages {
   padding: 20px 30px;
   overflow-y: scroll;
-  max-height: 54vh;
+  height: 72.5vh;
 }
 
 .message {
@@ -66,16 +66,16 @@
   display: flex;
   justify-content: space-around;
   padding: 20px;
-  position: absolute;
-  bottom: 10px;
-  width: 75%;
+  /* position: absolute;
+  bottom: 10px; */
+  width: 90%;
   border-top: 1px solid #eee;
 }
 .footer textarea {
   width: 80%;
   border: 1px solid #eee;
   border-radius: 5px;
-  height: 50px;
+  height: 25px;
   padding: 10px;
 }
 .footer textarea:focus {
