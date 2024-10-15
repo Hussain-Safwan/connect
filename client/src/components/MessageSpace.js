@@ -35,9 +35,13 @@ function MessageSpace() {
     }
   }, [selectedThread]);
 
-  const msgRef=React.useRef(null)
-  const scroll=()=>{msgRef.current.scrollIntoView(false)}
-  React.useEffect(()=>{scroll()}, [selectedThread.messages])
+  const msgRef = React.useRef(null);
+  const scroll = () => {
+    msgRef.current.scrollIntoView(false);
+  };
+  React.useEffect(() => {
+    if (msgRef.current) scroll();
+  }, [selectedThread.messages]);
 
   const submitMessage = async () => {
     const res = await post("/send-message", {
@@ -228,7 +232,7 @@ function MessageSpace() {
             {selectedThread.messages.map((item, i) =>
               item.sender.username !== user.username ? (
                 <>
-                  <div className="message left">
+                  <div className="message left" ref={msgRef}>
                     <div className="message-header">
                       <strong>{"@" + item.sender.username}</strong>
                       <span>{formatDate(item.sendingTime)}</span>
@@ -241,11 +245,15 @@ function MessageSpace() {
                 <>
                   <div style={{ display: "flex" }}>
                     <span />
-                    <div ref={msgRef} className="message right">{item.content}
-                    <div className="message-header">
-                      <strong></strong>
-                      <span style={{color: '#fff'}}>{formatDate(item.sendingTime)}</span>
-                    </div></div>
+                    <div ref={msgRef} className="message right">
+                      {item.content}
+                      <div className="message-header">
+                        <strong></strong>
+                        <span style={{ color: "#fff" }}>
+                          {formatDate(item.sendingTime)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </>
               )
