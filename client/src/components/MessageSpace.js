@@ -51,13 +51,13 @@ function MessageSpace() {
     });
 
     if (res.data) {
-      const index = threadList.findIndex(
-        (item) => item._id === selectedThread._id
+      let tempList = threadList.filter(
+        (item) => item._id !== selectedThread._id
       );
-      threadList[index] = res.data.data;
+      tempList = [res.data.data, ...tempList];
       setContext((ctx) => ({
         ...ctx,
-        threadList,
+        threadList: tempList,
         selectedThread: res.data.data,
       }));
     }
