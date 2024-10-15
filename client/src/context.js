@@ -3,16 +3,22 @@ import React, { createContext, useEffect, useState } from "react";
 export const MyContext = createContext();
 
 export const MyProvider = ({ children }) => {
-  const [context, setContext] = useState({
-    user: null,
-    threadList: [],
-    selectedThread: null,
-  });
+  const getInitialState = () => {
+    const state = localStorage.getItem("connect");
+    return state !== "null"
+      ? JSON.parse(state)
+      : {
+          user: null,
+          threadList: [],
+          selectedThread: null,
+        };
+  };
 
-  const ctx = localStorage.getItem("connect");
-  if (ctx !== "null" && context?.user === null) {
-    setContext({ ...JSON.parse(ctx) });
-  }
+  const [context, setContext] = useState(getInitialState);
+
+  useEffect(() => {
+    localStorage.setItem("connect", JSON.stringify(context));
+  }, [context]);
 
   return (
     <MyContext.Provider value={{ context, setContext }}>
