@@ -244,7 +244,7 @@ function ChatListHeader() {
         <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
           Chats
         </Typography>
-        <div>
+        <div className="two-btns">
           <Button
             onClick={() => setOpenNewModal(true)}
             style={{ color: "#333" }}
