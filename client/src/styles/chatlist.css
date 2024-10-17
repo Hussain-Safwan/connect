@@ -1,9 +1,9 @@
 .list {
   width: 20%;
-  border-right: 1px solid #ddd;
   height: 100vh;
   padding: 30px 30px;
   overflow-y: scroll;
+  background: #FAF9F6;
 }
 
 .list-item {
@@ -17,7 +17,6 @@
 
 .selected-item {
   background: #e5ffed;
-  border-left: 3px solid #b1ffca;
 }
 
 .added-contacts {
