@@ -33,7 +33,7 @@
 .messages {
   padding: 20px 30px;
   overflow-y: scroll;
-  height: 72.5vh;
+  /* height: 72.5vh; */
 }
 
 .message {
@@ -62,12 +62,32 @@
   margin-right: 0;
 }
 
+.file-list {
+  padding: 5px;
+}
+
 .footer {
   display: flex;
   justify-content: space-around;
   padding: 20px;
   width: 90%;
   border-top: 1px solid #eee;
+}
+.footer .btn-group{
+  display: flex;
+  width: 10%;
+}
+.footer input[type='file'] {
+  visibility: hidden;
+}
+.footer label {
+  cursor: pointer;
+  margin-top: 5px;
+  padding: 5px;
+  border-radius: 10px;
+}
+.footer label:hover {
+  background: #eee;
 }
 .footer .msg-box {
   display: flex;

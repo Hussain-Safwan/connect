@@ -12,6 +12,9 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
 import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
@@ -24,6 +27,7 @@ function MessageSpace() {
   const { user, threadList, selectedThread } = context;
   const navigate = useNavigate();
   const [message, setMessage] = React.useState("");
+  const [fileList, setFileList]=React.useState([])
   const [openGroupModal, setOpenGroupModal] = React.useState(false);
   const [contactUsername, setContactUsername] = React.useState("");
   const [addedContacts, setAddedContacts] = React.useState([]);
@@ -65,6 +69,18 @@ function MessageSpace() {
     setMessage("");
   };
 
+  const handleFileChange=e=>{
+    setFileList(files=>[...files, ...e.target.files])
+    console.log(fileList)
+  }
+
+  const handleFileDelete=i=>{
+    console.log(i)
+    const tempList=fileList
+    tempList.splice(i, 1)
+    setFileList([...tempList])
+  }
+
   const handleGroupModalClose = () => {
     setOpenGroupModal(false);
     setContactUsername("");
@@ -85,7 +101,7 @@ function MessageSpace() {
     if (
       index !== -1 &&
       addedContacts.findIndex((item) => item.username === contactUsername) ===
-        -1
+      -1
     ) {
       console.log(threadList[index].participants);
       setAddedContacts([threadList[index].participants[0], ...addedContacts]);
@@ -229,7 +245,7 @@ function MessageSpace() {
 
       {selectedThread ? (
         <>
-          <div className="messages">
+          <div className="messages" style={{height:fileList.length===0?'70.5vh':'66vh'}}>
             {selectedThread.messages.map((item, i) =>
               item.sender.username !== user.username ? (
                 <>
@@ -261,22 +277,37 @@ function MessageSpace() {
             )}
           </div>
 
+          <div className="file-list">{
+              fileList.length!==0 && <Stack direction="row" spacing={1}>
+              {
+                fileList.map((item, i)=>(
+                  <Chip label={item.name} onDelete={()=>handleFileDelete(i)} />
+                ))
+              }
+            </Stack>
+            }</div>
+
           <div className="footer">
-          <div className="msg-box">
-          <input className="msg-text" value={message}
-              placeholder="Type your message here"
-              onChange={(e) => setMessage(e.target.value)}/>
-            
-            <Button
-              variant="contained"
-              color="success"
-              onClick={submitMessage}
-              style={{borderRadius: '20px'}}
-              disabled={message === ""}
-            >
-              <SendIcon />
-            </Button>
-          </div>
+          
+            <div className="msg-box">
+              <input className="msg-text" value={message}
+                placeholder="Type your message here"
+                onChange={(e) => setMessage(e.target.value)} />
+
+              <div className="btn-group">
+                <label for='file-input' className="file-label"><AttachFileIcon color="success"/></label>
+                <input onChange={e=>handleFileChange(e)} id='file-input' multiple type="file"/>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={submitMessage}
+                  style={{ borderRadius: '20px' }}
+                  disabled={message === ""}
+                >
+                  <SendIcon />
+                </Button>
+              </div>
+            </div>
           </div>
           <Modal
             open={openGroupModal}
@@ -335,7 +366,7 @@ function MessageSpace() {
                 )}
 
               {selectedThread.owner &&
-              selectedThread.owner.username === user.username ? (
+                selectedThread.owner.username === user.username ? (
                 <Button
                   variant="contained"
                   color="success"
