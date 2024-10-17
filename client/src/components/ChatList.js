@@ -13,6 +13,10 @@ function ChatList() {
   const { context, setContext } = React.useContext(MyContext);
   const { user, threadList, selectedThread } = context;
 
+  const trim=(str)=>{
+    return str.length>10?str.substring(0, 15)+"...":str
+  }
+
   return (
     <div className="list">
       <ChatListHeader />
@@ -39,12 +43,13 @@ function ChatList() {
                   src={`https://robohash.org/${threadList[i].participants[0].username}`}
                 />
               </ListItemAvatar>
-              <ListItemText
+              <ListItemText 
                 primary={item.owner ? item.name : item.participants[0].name}
                 secondary={
-                  item.owner
-                    ? item.participants.length + 1 + " people"
-                    : "@" + item.participants[0].username
+                  item.messages.length !== 0 ?
+                  <span style={{fontSize: '13px'}}>{
+                    `${item.messages[item.messages.length-1].sender.username===user.username?'You:':'' } ${trim(item.messages[item.messages.length-1].content)}`
+                    }</span>:<></>
                 }
               />
             </ListItem>
