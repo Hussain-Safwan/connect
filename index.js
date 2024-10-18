@@ -43,8 +43,9 @@ const port = process.env.PORT || 4000;
 server.listen(port, () => console.log(`Server is running at port: ${port}`));
 
 io.on("connection", (socket) => {
-  socket.on("message", (message) => {
-    console.log(message);
-    sendMessage(message);
+  socket.on("message", async (message) => {
+    const thread = await sendMessage(message);
+    console.log(thread);
+    io.emit("message", thread);
   });
 });

@@ -16,5 +16,5 @@ module.exports.sendMessage = async (message) => {
     (item) => item.username !== currentUser.username
   );
 
-  return;
+  return thread;
 };

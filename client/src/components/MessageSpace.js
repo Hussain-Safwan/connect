@@ -36,10 +36,31 @@ function MessageSpace() {
     }
   }, [selectedThread]);
 
+  React.useEffect(() => {
+    socket.on("message", (thread) => {
+      console.log(thread);
+      if (
+        thread.messages[thread.messages.length - 1].sender.username ===
+        user.username
+      )
+        return;
+      let tempList = threadList.filter(
+        (item) => item._id !== selectedThread._id
+      );
+
+      setContext((ctx) => ({
+        ...ctx,
+        threadList: [thread, ...tempList],
+        selectedThread: thread,
+      }));
+    });
+  }, []);
+
   const msgRef = React.useRef(null);
   const scroll = () => {
     msgRef.current.scrollIntoView(false);
   };
+
   React.useEffect(() => {
     if (msgRef.current) scroll();
   }, [selectedThread.messages]);
@@ -58,22 +79,6 @@ function MessageSpace() {
       threadList: [tempThread, ...tempList],
       selectedThread: tempThread,
     }));
-    // const res = await post("/send-message", {
-    //   threadId: selectedThread._id,
-    //   userId: user._id,
-    //   content: message,
-    // });
-    // if (res.data) {
-    //   let tempList = threadList.filter(
-    //     (item) => item._id !== selectedThread._id
-    //   );
-    //   tempList = [res.data.data, ...tempList];
-    //   setContext((ctx) => ({
-    //     ...ctx,
-    //     threadList: tempList,
-    //     selectedThread: res.data.data,
-    //   }));
-    // }
     setMessage("");
   };
 
