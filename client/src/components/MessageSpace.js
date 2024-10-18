@@ -11,6 +11,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
+import SendIcon from "@mui/icons-material/Send";
+
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
 import { useNavigate } from "react-router-dom";
@@ -272,19 +274,24 @@ function MessageSpace() {
           </div>
 
           <div className="footer">
-            <textarea
-              value={message}
-              placeholder="Type your message here"
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="success"
-              onClick={submitMessage}
-              disabled={message === ""}
-            >
-              Send
-            </Button>
+            <div className="msg-box">
+              <input
+                className="msg-text"
+                value={message}
+                placeholder="Type your message here"
+                onChange={(e) => setMessage(e.target.value)}
+              />
+
+              <Button
+                variant="contained"
+                color="success"
+                onClick={submitMessage}
+                style={{ borderRadius: "20px" }}
+                disabled={message === ""}
+              >
+                <SendIcon />
+              </Button>
+            </div>
           </div>
           <Modal
             open={openGroupModal}
