@@ -38,7 +38,6 @@ function MessageSpace() {
 
   React.useEffect(() => {
     socket.on("message", (thread) => {
-      console.log(thread);
       if (
         thread.messages[thread.messages.length - 1].sender.username ===
         user.username
@@ -73,7 +72,11 @@ function MessageSpace() {
     });
     let tempList = threadList.filter((item) => item._id !== selectedThread._id);
     const tempThread = selectedThread;
-    tempThread.messages.push({ sender: user, content: message });
+    tempThread.messages.push({
+      sender: user,
+      content: message,
+      sendingTime: Date.now(),
+    });
     setContext((ctx) => ({
       ...ctx,
       threadList: [tempThread, ...tempList],
