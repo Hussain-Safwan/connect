@@ -11,12 +11,12 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
-
 import "../styles/msg-space.css";
 import { MyContext } from "../context";
 import { useNavigate } from "react-router-dom";
 import { get, post, put } from "../apiClient";
 import AccountDialog from "./AccountDialog";
+import { socket } from "../apiClient";
 
 function MessageSpace() {
   const { context, setContext } = React.useContext(MyContext);
@@ -28,7 +28,6 @@ function MessageSpace() {
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openAccountDialog, setOpenAccountDialog] = React.useState(false);
-
   React.useEffect(() => {
     if (selectedThread) {
       setAddedContacts([...selectedThread.participants]);
@@ -44,23 +43,35 @@ function MessageSpace() {
   }, [selectedThread.messages]);
 
   const submitMessage = async () => {
-    const res = await post("/send-message", {
+    socket.emit("message", {
       threadId: selectedThread._id,
       userId: user._id,
       content: message,
     });
-
-    if (res.data) {
-      let tempList = threadList.filter(
-        (item) => item._id !== selectedThread._id
-      );
-      tempList = [res.data.data, ...tempList];
-      setContext((ctx) => ({
-        ...ctx,
-        threadList: tempList,
-        selectedThread: res.data.data,
-      }));
-    }
+    let tempList = threadList.filter((item) => item._id !== selectedThread._id);
+    const tempThread = selectedThread;
+    tempThread.messages.push({ sender: user, content: message });
+    setContext((ctx) => ({
+      ...ctx,
+      threadList: [tempThread, ...tempList],
+      selectedThread: tempThread,
+    }));
+    // const res = await post("/send-message", {
+    //   threadId: selectedThread._id,
+    //   userId: user._id,
+    //   content: message,
+    // });
+    // if (res.data) {
+    //   let tempList = threadList.filter(
+    //     (item) => item._id !== selectedThread._id
+    //   );
+    //   tempList = [res.data.data, ...tempList];
+    //   setContext((ctx) => ({
+    //     ...ctx,
+    //     threadList: tempList,
+    //     selectedThread: res.data.data,
+    //   }));
+    // }
     setMessage("");
   };
 
