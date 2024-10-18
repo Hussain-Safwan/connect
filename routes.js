@@ -1,28 +1,18 @@
 const routes = require("express").Router();
-const passport = require("passport");
 const { userModel, threadModel } = require("./model");
-const session = require("express-session");
-const localStrategy = require("passport-local");
 
-routes.use(
-  session({
-    secret: "your_secret_key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
-);
-routes.use(passport.initialize());
-routes.use(passport.session());
-
-const isLoggedIn = (req, res, done) => {
-  if (req.user) return done();
-  res.json(null);
-};
+// routes.use(
+//   session({
+//     secret: "your_secret_key",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       secure: false,
+//       httpOnly: true,
+//       sameSite: "lax",
+//     },
+//   })
+// );
 
 const genHexString = (len) => {
   const hex = "0123456789abcdef";
@@ -33,68 +23,53 @@ const genHexString = (len) => {
   return output;
 };
 
-passport.use(
-  new localStrategy(async function verify(username, password, done) {
-    const user = await userModel.findOne({ username });
-    if (!user) {
-      return done(null, false, "No such user find");
-    } else if (user.password != password) {
-      return done(null, false, "Incorrect password");
-    } else {
-      return done(null, user);
-    }
-  })
-);
+routes.post("/login", async (req, res) => {
+  console.log(req.body);
+  const { username, password } = req.body;
+  const user = await userModel.findOne({ username });
 
-passport.serializeUser(function (user, done) {
-  done(null, user._id);
-});
+  if (!user) {
+    res.json({
+      success: false,
+      message: "Invalid username",
+      data: {},
+    });
+  } else if (user.password !== password) {
+    res.json({
+      success: false,
+      message: "Invalid password",
+      data: {},
+    });
+  } else {
+    const threadList = await threadModel.find({
+      participants: { $in: [user] },
+    });
 
-passport.deserializeUser(async function (id, done) {
-  const user = await userModel.findById(id);
-  done(null, user);
-});
+    let tempThreadList = [];
+    threadList.forEach((thread) => {
+      const part = thread.participants.filter(
+        (item) => item.username !== user.username
+      );
+      thread.participants = part;
+      tempThreadList.push(thread);
+    });
 
-routes.get("/user", isLoggedIn, async (req, res) => {
-  const threadList = await threadModel.find({
-    participants: { $in: [req.user] },
-  });
-  res.json({
-    success: true,
-    message: "User logged in",
-    data: { user: req.user, threadList },
-  });
-});
+    tempThreadList.sort((a, b) => {
+      if (a.messages.length < 1) return 1;
+      if (b.messages.length < 1) return -1;
 
-routes.post("/login", passport.authenticate("local"), async (req, res) => {
-  const threadList = await threadModel.find({
-    participants: { $in: [req.user] },
-  });
+      const date_a = a.messages[a.messages.length - 1].sendingTime;
+      const date_b = b.messages[b.messages.length - 1].sendingTime;
 
-  let tempThreadList = [];
-  threadList.forEach((thread) => {
-    const part = thread.participants.filter(
-      (item) => item.username !== req.user.username
-    );
-    thread.participants = part;
-    tempThreadList.push(thread);
-  });
+      return date_b - date_a;
+    });
 
-  tempThreadList.sort((a, b) => {
-    if (a.messages.length < 1) return 1;
-    if (b.messages.length < 1) return -1;
-
-    const date_a = a.messages[a.messages.length - 1].sendingTime;
-    const date_b = b.messages[b.messages.length - 1].sendingTime;
-
-    return date_b - date_a;
-  });
-
-  res.json({
-    success: true,
-    message: "Login successful",
-    data: { user: req.user, threadList: tempThreadList },
-  });
+    res.json({
+      success: true,
+      message: "Login successful",
+      data: { user, threadList: tempThreadList },
+    });
+  }
 });
 
 routes.post("/save", async (req, res) => {
