@@ -47,6 +47,26 @@ function ChatListHeader() {
     });
   }, []);
 
+  React.useEffect(() => {
+    socket.on("add-group", (res) => {
+      console.log("addGroup");
+      if (
+        res.data.participants.find(
+          (item) => item.username === user.username
+        ) !== -1
+      ) {
+        res.data.participants = res.data.participants.filter(
+          (item) => item.username !== user.username
+        );
+        setContext((ctx) => ({
+          ...ctx,
+          threadList: [res.data, ...threadList],
+          selectedThread: res.data,
+        }));
+      }
+    });
+  }, []);
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -120,19 +140,8 @@ function ChatListHeader() {
       participants: addedContacts,
     };
 
-    const res = await post("/group", {
-      thread,
-      userId: user._id,
-    });
-
-    if (res.data) {
-      setContext((ctx) => ({
-        ...ctx,
-        threadList: [res.data.data, ...threadList],
-        selectedThread: res.data.data,
-      }));
-      handleGroupModalClose();
-    }
+    socket.emit("add-group", { thread, userId: user._id });
+    handleGroupModalClose();
   };
 
   return (
