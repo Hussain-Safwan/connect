@@ -16,7 +16,7 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { MyContext } from "../context";
-import { post } from "../apiClient";
+import { post, socket } from "../apiClient";
 
 function ChatListHeader() {
   const [openNewModal, setOpenNewModal] = React.useState(false);
@@ -27,6 +27,25 @@ function ChatListHeader() {
   const [addedContacts, setAddedContacts] = React.useState([]);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [alert, setAlert] = React.useState("");
+
+  React.useEffect(() => {
+    socket.on("add-thread", (res) => {
+      if (res.success) {
+        res.data.participants = res.data.participants.filter(
+          (item) => item.username !== user.username
+        );
+        setContext((ctx) => ({
+          ...ctx,
+          threadList: [res.data, ...threadList],
+          selectedThread: res.data,
+        }));
+        setOpenNewModal(false);
+      } else {
+        setAlert("Incorrect username or group token.");
+        setOpenSnackbar(true);
+      }
+    });
+  }, []);
 
   const style = {
     position: "absolute",
@@ -89,22 +108,10 @@ function ChatListHeader() {
   };
 
   const submitCode = async () => {
-    setOpenNewModal(false);
-
-    try {
-      const res = await post("/thread", {
-        username: codeValue,
-        userId: user._id,
-      });
-      setContext((ctx) => ({
-        ...ctx,
-        threadList: [res.data.data, ...threadList],
-        selectedThread: res.data.data,
-      }));
-    } catch (error) {
-      setAlert("Incorrect username or group token.");
-      setOpenSnackbar(true);
-    }
+    socket.emit("add-thread", {
+      username: codeValue,
+      userId: user._id,
+    });
   };
 
   const submitGroupThread = async () => {
