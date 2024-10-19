@@ -17,13 +17,14 @@ const get = (url) => {
 };
 
 const post = (url, data) => {
-  return client.post(url, data);
+  return client.post(url, data, { withCredentials: true });
 };
 
 const put = (url, data) => {
-  return client.put(url, data);
+  return client.put(url, data, { withCredentials: true });
 };
 
 export const socket = io(baseURL.replace("/api", ""));
 
 export { get, post, put };
+//
