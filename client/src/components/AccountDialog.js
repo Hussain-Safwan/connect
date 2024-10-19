@@ -20,7 +20,7 @@ const AccountDialog = ({ open, handleClose }) => {
   const navigate = useNavigate();
   const logout = () => {
     setContext({ user: null, threadList: [], selectedThread: null });
-    localStorage.setItem("connect", null);
+    localStorage.removeItemItem("connect");
     navigate("/login");
   };
 

@@ -5,7 +5,8 @@ export const MyContext = createContext();
 export const MyProvider = ({ children }) => {
   const getInitialState = () => {
     const state = localStorage.getItem("connect");
-    return state !== "null"
+    console.log(typeof state);
+    return state !== null
       ? JSON.parse(state)
       : {
           user: null,
