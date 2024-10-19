@@ -39,8 +39,10 @@ function MessageSpace() {
   React.useEffect(() => {
     socket.on("message", (thread) => {
       if (
+        thread.participants.find((item) => item.username === user.username) !==
+          -1 &&
         thread.messages[thread.messages.length - 1].sender.username ===
-        user.username
+          user.username
       )
         return;
       let tempList = threadList.filter(
