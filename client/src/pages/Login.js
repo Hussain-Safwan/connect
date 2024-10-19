@@ -25,6 +25,7 @@ function Login() {
         username,
         password,
       });
+
       const { user, threadList } = res.data.data;
       const ctx = {
         user: user,
@@ -53,7 +54,6 @@ function Login() {
         </h1>
         <div className="login-box">
           <TextField
-            id="outlined-basic"
             label="Username"
             variant="outlined"
             className="textbox"
@@ -64,7 +64,6 @@ function Login() {
         <br />
         <div className="login-box">
           <TextField
-            id="outlined-basic"
             label="Password"
             variant="outlined"
             className="textbox"
