@@ -19,35 +19,26 @@ routes.post("/login", async (req, res) => {
       data: {},
     });
   } else {
-    const threadList = await threadModel.find({
-      participants: { $in: [user] },
-    });
+    const threadList = await findAllThreads(user);
 
-    let tempThreadList = [];
-    threadList.forEach((thread) => {
-      const part = thread.participants.filter(
-        (item) => item.username !== user.username
-      );
-      thread.participants = part;
-      tempThreadList.push(thread);
-    });
-
-    tempThreadList.sort((a, b) => {
-      if (a.messages.length < 1) return 1;
-      if (b.messages.length < 1) return -1;
-
-      const date_a = a.messages[a.messages.length - 1].sendingTime;
-      const date_b = b.messages[b.messages.length - 1].sendingTime;
-
-      return date_b - date_a;
-    });
-
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Login successful",
-      data: { user, threadList: tempThreadList },
+      data: { user, threadList },
     });
   }
+});
+
+routes.get("/threads/:username", async (req, res) => {
+  const { username } = req.params;
+  const user = await userModel.findOne({ username });
+  const threadList = await findAllThreads(user);
+
+  res.status(200).json({
+    success: true,
+    message: "All threads fetched",
+    data: threadList,
+  });
 });
 
 routes.post("/save", async (req, res) => {
@@ -105,5 +96,32 @@ routes.get("/leave/:groupId/:username", async (req, res) => {
     data: {},
   });
 });
+
+const findAllThreads = async (user) => {
+  const threadList = await threadModel.find({
+    participants: { $in: [user] },
+  });
+
+  let tempThreadList = [];
+  threadList.forEach((thread) => {
+    const part = thread.participants.filter(
+      (item) => item.username !== user.username
+    );
+    thread.participants = part;
+    tempThreadList.push(thread);
+  });
+
+  tempThreadList.sort((a, b) => {
+    if (a.messages.length < 1) return 1;
+    if (b.messages.length < 1) return -1;
+
+    const date_a = a.messages[a.messages.length - 1].sendingTime;
+    const date_b = b.messages[b.messages.length - 1].sendingTime;
+
+    return date_b - date_a;
+  });
+
+  return tempThreadList;
+};
 
 module.exports = routes;
