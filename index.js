@@ -1,12 +1,12 @@
 const http = require("http");
 const mongoose = require("mongoose");
 const express = require("express");
-const routes = require("./routes");
+const routes = require("./staticController");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
 const socket = require("socket.io");
-const { sendMessage, addThread } = require("./messageController");
+const { sendMessage, addThread, addGroup } = require("./dynamicController");
 
 app = express();
 
@@ -46,14 +46,19 @@ server.listen(port, () =>
 );
 
 io.on("connection", (socket) => {
-  socket.on("message", async (message) => {
-    const thread = await sendMessage(message);
-    io.emit("message", thread);
+  socket.on("message", async (req) => {
+    const res = await sendMessage(req);
+    io.emit("message", res);
   });
 
-  socket.on("add-thread", async (body) => {
-    console.log(body);
-    const res = await addThread(body);
+  socket.on("add-thread", async (req) => {
+    const res = await addThread(req);
     io.emit("add-thread", res);
+  });
+
+  socket.on("add-group", async (req) => {
+    const res = await addGroup(req);
+    console.log(res);
+    io.emit("add-group", res);
   });
 });
