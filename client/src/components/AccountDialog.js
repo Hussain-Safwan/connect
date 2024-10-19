@@ -9,8 +9,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import PersonIcon from "@mui/icons-material/Person";
-import { blue } from "@mui/material/colors";
 import { MyContext } from "../context";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +18,7 @@ const AccountDialog = ({ open, handleClose }) => {
   const navigate = useNavigate();
   const logout = () => {
     setContext({ user: null, threadList: [], selectedThread: null });
-    localStorage.removeItemItem("connect");
+    localStorage.removeItem("connect");
     navigate("/login");
   };
 
