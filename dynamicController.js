@@ -21,10 +21,6 @@ module.exports.sendMessage = async (message) => {
 
   await thread.save();
 
-  thread.participants = thread.participants.filter(
-    (item) => item.username !== currentUser.username
-  );
-
   return {
     success: true,
     message: "New message!",

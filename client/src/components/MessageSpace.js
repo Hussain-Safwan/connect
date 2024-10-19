@@ -46,12 +46,15 @@ function MessageSpace() {
         res.data.messages[res.data.messages.length - 1].sender.username !==
           user.username
       ) {
-        console.log(user.name);
         // const sound = new Audio(messageTone);
         // sound.play();
 
-        let tempList = threadList.filter(
+        const tempList = threadList.filter(
           (item) => item._id !== selectedThread._id
+        );
+
+        res.data.participants = res.data.participants.filter(
+          (item) => item.username !== user.username
         );
 
         setContext((ctx) => ({
