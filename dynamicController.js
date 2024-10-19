@@ -25,7 +25,11 @@ module.exports.sendMessage = async (message) => {
     (item) => item.username !== currentUser.username
   );
 
-  return thread;
+  return {
+    success: true,
+    message: "New message!",
+    data: thread,
+  };
 };
 
 module.exports.addThread = async (body) => {

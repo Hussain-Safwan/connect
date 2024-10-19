@@ -38,25 +38,28 @@ function MessageSpace() {
   }, [selectedThread]);
 
   React.useEffect(() => {
-    socket.on("message", (thread) => {
+    socket.on("message", (res) => {
       if (
-        thread.participants.find((item) => item.username === user.username) !==
-          -1 &&
-        thread.messages[thread.messages.length - 1].sender.username ===
+        res.data.participants.findIndex(
+          (item) => item.username === user.username
+        ) !== -1 &&
+        res.data.messages[res.data.messages.length - 1].sender.username !==
           user.username
-      )
-        return;
-      const sound = new Audio(messageTone);
-      sound.play();
-      let tempList = threadList.filter(
-        (item) => item._id !== selectedThread._id
-      );
+      ) {
+        console.log(user.name);
+        // const sound = new Audio(messageTone);
+        // sound.play();
 
-      setContext((ctx) => ({
-        ...ctx,
-        threadList: [thread, ...tempList],
-        selectedThread: thread,
-      }));
+        let tempList = threadList.filter(
+          (item) => item._id !== selectedThread._id
+        );
+
+        setContext((ctx) => ({
+          ...ctx,
+          threadList: [res.data, ...tempList],
+          selectedThread: res.data,
+        }));
+      }
     });
   }, []);
 
