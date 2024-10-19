@@ -73,7 +73,7 @@ function MessageSpace() {
 
   React.useEffect(() => {
     if (msgRef.current) scroll();
-  }, [selectedThread.messages]);
+  }, [selectedThread]);
 
   const submitMessage = async () => {
     socket.emit("message", {
