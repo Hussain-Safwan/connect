@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { get, post, put } from "../apiClient";
 import AccountDialog from "./AccountDialog";
 import { socket } from "../apiClient";
+import messageTone from "../message-tone.wav";
 
 function MessageSpace() {
   const { context, setContext } = React.useContext(MyContext);
@@ -45,6 +46,8 @@ function MessageSpace() {
           user.username
       )
         return;
+      const sound = new Audio(messageTone);
+      sound.play();
       let tempList = threadList.filter(
         (item) => item._id !== selectedThread._id
       );
