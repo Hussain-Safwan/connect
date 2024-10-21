@@ -27,7 +27,7 @@ function Layout() {
         setContext((ctx) => ({
           ...ctx,
           threadList: res.data.data,
-          selectedThread: res.data.data.length === 0 ? {} : res.data.data[1],
+          selectedThread: res.data.data.length === 0 ? null: res.data.data[1],
         }));
         localStorage.setItem("connect", JSON.stringify(context));
       }
