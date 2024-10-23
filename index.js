@@ -22,7 +22,7 @@ mongoose
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://connect-messenger.netlify.app/"],
+    origin: "https://connect-messenger.netlify.app",
     credentials: true,
   })
 );
