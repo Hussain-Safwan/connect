@@ -20,7 +20,15 @@ mongoose
   })
   .then(() => console.log("mongoose connected"));
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(
+  cors({
+    origins: [
+      "http://localhost:3000",
+      "https://connect-messenger.netlify.app/",
+    ],
+    credentials: true,
+  })
+);
 app.options("*", cors());
 app.use(bodyParser.json());
 
@@ -41,6 +49,7 @@ if (process.env.NODE_ENV === "production") {
 const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 const io = socket(server, { cors: { origin: "*" } });
+
 server.listen(port, () =>
   console.log(`Realtime server is running at port: ${port}`)
 );
