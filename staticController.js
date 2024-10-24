@@ -102,16 +102,16 @@ const findAllThreads = async (user) => {
     participants: { $in: [user] },
   });
 
-  let tempThreadList = [];
-  threadList.forEach((thread) => {
-    const part = thread.participants.filter(
-      (item) => item.username !== user.username
-    );
-    thread.participants = part;
-    tempThreadList.push(thread);
-  });
+  // let tempThreadList = [];
+  // threadList.forEach((thread) => {
+  //   const part = thread.participants.filter(
+  //     (item) => item.username !== user.username
+  //   );
+  //   thread.participants = part;
+  //   tempThreadList.push(thread);
+  // });
 
-  tempThreadList.sort((a, b) => {
+  threadList.sort((a, b) => {
     if (a.messages.length < 1) return 1;
     if (b.messages.length < 1) return -1;
 
@@ -121,7 +121,7 @@ const findAllThreads = async (user) => {
     return date_b - date_a;
   });
 
-  return tempThreadList;
+  return threadList;
 };
 
 module.exports = routes;
